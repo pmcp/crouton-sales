@@ -31,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-import { usePosOrderItems } from '../composables/usePosOrderItems'
+import usePosOrderItems from '../composables/usePosOrderItems'
 
 const props = withDefaults(defineProps<{
   layout?: any

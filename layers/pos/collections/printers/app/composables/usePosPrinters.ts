@@ -3,7 +3,7 @@ import { z } from 'zod'
 export const posPrinterSchema = z.object({
   eventId: z.string().min(1, 'eventId is required'),
   locationId: z.string().min(1, 'locationId is required'),
-  name: z.string().min(1, 'name is required'),
+  title: z.string().min(1, 'title is required'),
   ipAddress: z.string().min(1, 'ipAddress is required'),
   port: z.string().optional(),
   status: z.string().optional(),
@@ -15,7 +15,7 @@ export const posPrintersColumns = [
   { accessorKey: 'id', header: 'Id' },
   { accessorKey: 'eventId', header: 'EventId' },
   { accessorKey: 'locationId', header: 'LocationId' },
-  { accessorKey: 'name', header: 'Name' },
+  { accessorKey: 'title', header: 'Title' },
   { accessorKey: 'ipAddress', header: 'IpAddress' },
   { accessorKey: 'port', header: 'Port' },
   { accessorKey: 'status', header: 'Status' },
@@ -32,7 +32,7 @@ export const posPrintersConfig = {
   defaultValues: {
     eventId: '',
     locationId: '',
-    name: '',
+    title: '',
     ipAddress: '',
     port: '',
     status: '',

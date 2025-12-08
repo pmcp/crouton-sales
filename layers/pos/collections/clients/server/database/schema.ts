@@ -22,7 +22,7 @@ export const posClients = sqliteTable('pos_clients', {
 
   teamId: text('teamId').notNull(),
   owner: text('owner').notNull(),
-  name: text('name').notNull(),
+  title: text('title').notNull(),
   isReusable: integer('isReusable', { mode: 'boolean' }).$default(() => false),
 
   createdAt: integer('createdAt', { mode: 'timestamp' }).notNull().$default(() => new Date()),

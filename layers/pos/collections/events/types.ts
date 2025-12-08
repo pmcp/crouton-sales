@@ -5,7 +5,7 @@ export interface PosEvent {
   id: string
   teamId: string
   owner: string
-  name: string
+  title: string
   slug: string
   description?: string
   eventType?: string

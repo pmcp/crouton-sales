@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 export const posEventSchema = z.object({
-  name: z.string().min(1, 'name is required'),
+  title: z.string().min(1, 'title is required'),
   slug: z.string().min(1, 'slug is required'),
   description: z.string().optional(),
   eventType: z.string().optional(),
@@ -16,7 +16,7 @@ export const posEventSchema = z.object({
 
 export const posEventsColumns = [
   { accessorKey: 'id', header: 'Id' },
-  { accessorKey: 'name', header: 'Name' },
+  { accessorKey: 'title', header: 'Title' },
   { accessorKey: 'slug', header: 'Slug' },
   { accessorKey: 'description', header: 'Description' },
   { accessorKey: 'eventType', header: 'EventType' },
@@ -36,7 +36,7 @@ export const posEventsConfig = {
   componentName: 'PosEventsForm',
   schema: posEventSchema,
   defaultValues: {
-    name: '',
+    title: '',
     slug: '',
     description: '',
     eventType: '',

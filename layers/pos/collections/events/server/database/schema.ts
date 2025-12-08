@@ -22,7 +22,7 @@ export const posEvents = sqliteTable('pos_events', {
 
   teamId: text('teamId').notNull(),
   owner: text('owner').notNull(),
-  name: text('name').notNull(),
+  title: text('title').notNull(),
   slug: text('slug').notNull().unique(),
   description: text('description'),
   eventType: text('eventType'),

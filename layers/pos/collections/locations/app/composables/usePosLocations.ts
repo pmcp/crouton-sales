@@ -2,13 +2,13 @@ import { z } from 'zod'
 
 export const posLocationSchema = z.object({
   eventId: z.string().min(1, 'eventId is required'),
-  name: z.string().min(1, 'name is required')
+  title: z.string().min(1, 'title is required')
 })
 
 export const posLocationsColumns = [
   { accessorKey: 'id', header: 'Id' },
   { accessorKey: 'eventId', header: 'EventId' },
-  { accessorKey: 'name', header: 'Name' }
+  { accessorKey: 'title', header: 'Title' }
 ]
 
 export const posLocationsConfig = {
@@ -19,7 +19,7 @@ export const posLocationsConfig = {
   schema: posLocationSchema,
   defaultValues: {
     eventId: '',
-    name: ''
+    title: ''
   },
   columns: posLocationsColumns,
 }

@@ -26,7 +26,7 @@
 </template>
 
 <script setup lang="ts">
-import { usePosEvents } from '../composables/usePosEvents'
+import usePosEvents from '../composables/usePosEvents'
 
 const props = withDefaults(defineProps<{
   layout?: any

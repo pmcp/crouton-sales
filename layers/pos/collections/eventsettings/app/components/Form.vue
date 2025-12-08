@@ -50,7 +50,7 @@
 
 <script setup lang="ts">
 import type { PosEventSettingFormProps, PosEventSettingFormData } from '../../types'
-import { usePosEventSettings } from '../composables/usePosEventSettings'
+import usePosEventSettings from '../composables/usePosEventSettings'
 
 const props = defineProps<PosEventSettingFormProps>()
 const { defaultValue, schema, collection } = usePosEventSettings()

@@ -30,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-import { usePosHelpers } from '../composables/usePosHelpers'
+import usePosHelpers from '../composables/usePosHelpers'
 
 const props = withDefaults(defineProps<{
   layout?: any

@@ -23,7 +23,7 @@ export const posLocations = sqliteTable('pos_locations', {
   teamId: text('teamId').notNull(),
   owner: text('owner').notNull(),
   eventId: text('eventId').notNull(),
-  name: text('name').notNull(),
+  title: text('title').notNull(),
 
   createdAt: integer('createdAt', { mode: 'timestamp' }).notNull().$default(() => new Date()),
   updatedAt: integer('updatedAt', { mode: 'timestamp' }).notNull().$onUpdate(() => new Date()),

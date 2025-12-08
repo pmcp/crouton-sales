@@ -24,8 +24,8 @@
             label="EventId"
           />
         </UFormField>
-        <UFormField label="Name" name="name" class="not-last:pb-4">
-          <UInput v-model="state.name" class="w-full" size="xl" />
+        <UFormField label="Title" name="title" class="not-last:pb-4">
+          <UInput v-model="state.title" class="w-full" size="xl" />
         </UFormField>
       </div>
       </template>
@@ -44,7 +44,7 @@
 
 <script setup lang="ts">
 import type { PosLocationFormProps, PosLocationFormData } from '../../types'
-import { usePosLocations } from '../composables/usePosLocations'
+import usePosLocations from '../composables/usePosLocations'
 
 const props = defineProps<PosLocationFormProps>()
 const { defaultValue, schema, collection } = usePosLocations()

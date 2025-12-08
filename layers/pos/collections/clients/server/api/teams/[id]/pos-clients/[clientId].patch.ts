@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
 
   return await updatePosClient(clientId, team.id, user.id, {
     id: body.id,
-    name: body.name,
+    title: body.title,
     isReusable: body.isReusable
   })
 })

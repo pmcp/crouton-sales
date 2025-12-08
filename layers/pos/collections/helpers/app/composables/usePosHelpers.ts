@@ -2,7 +2,7 @@ import { z } from 'zod'
 
 export const posHelperSchema = z.object({
   eventId: z.string().min(1, 'eventId is required'),
-  name: z.string().min(1, 'name is required'),
+  title: z.string().min(1, 'title is required'),
   token: z.string().min(1, 'token is required'),
   isActive: z.boolean().optional(),
   expiresAt: z.date().optional(),
@@ -12,7 +12,7 @@ export const posHelperSchema = z.object({
 export const posHelpersColumns = [
   { accessorKey: 'id', header: 'Id' },
   { accessorKey: 'eventId', header: 'EventId' },
-  { accessorKey: 'name', header: 'Name' },
+  { accessorKey: 'title', header: 'Title' },
   { accessorKey: 'token', header: 'Token' },
   { accessorKey: 'isActive', header: 'IsActive' },
   { accessorKey: 'expiresAt', header: 'ExpiresAt' },
@@ -27,7 +27,7 @@ export const posHelpersConfig = {
   schema: posHelperSchema,
   defaultValues: {
     eventId: '',
-    name: '',
+    title: '',
     token: '',
     isActive: false,
     expiresAt: null,

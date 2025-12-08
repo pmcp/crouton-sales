@@ -1,13 +1,13 @@
 import { z } from 'zod'
 
 export const posClientSchema = z.object({
-  name: z.string().min(1, 'name is required'),
+  title: z.string().min(1, 'title is required'),
   isReusable: z.boolean().optional()
 })
 
 export const posClientsColumns = [
   { accessorKey: 'id', header: 'Id' },
-  { accessorKey: 'name', header: 'Name' },
+  { accessorKey: 'title', header: 'Title' },
   { accessorKey: 'isReusable', header: 'IsReusable' }
 ]
 
@@ -18,7 +18,7 @@ export const posClientsConfig = {
   componentName: 'PosClientsForm',
   schema: posClientSchema,
   defaultValues: {
-    name: '',
+    title: '',
     isReusable: false
   },
   columns: posClientsColumns,

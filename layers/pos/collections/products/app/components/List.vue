@@ -38,7 +38,7 @@
 </template>
 
 <script setup lang="ts">
-import { usePosProducts } from '../composables/usePosProducts'
+import usePosProducts from '../composables/usePosProducts'
 
 const props = withDefaults(defineProps<{
   layout?: any

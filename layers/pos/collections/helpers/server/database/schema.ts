@@ -23,7 +23,7 @@ export const posHelpers = sqliteTable('pos_helpers', {
   teamId: text('teamId').notNull(),
   owner: text('owner').notNull(),
   eventId: text('eventId').notNull(),
-  name: text('name').notNull(),
+  title: text('title').notNull(),
   token: text('token').notNull().unique(),
   isActive: integer('isActive', { mode: 'boolean' }).$default(() => false),
   expiresAt: integer('expiresAt', { mode: 'timestamp' }).$default(() => new Date()),

@@ -50,7 +50,7 @@
 
 <script setup lang="ts">
 import type { PosProductOptionFormProps, PosProductOptionFormData } from '../../types'
-import { usePosProductOptions } from '../composables/usePosProductOptions'
+import usePosProductOptions from '../composables/usePosProductOptions'
 
 const props = defineProps<PosProductOptionFormProps>()
 const { defaultValue, schema, collection } = usePosProductOptions()

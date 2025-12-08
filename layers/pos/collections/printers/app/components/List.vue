@@ -31,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-import { usePosPrinters } from '../composables/usePosPrinters'
+import usePosPrinters from '../composables/usePosPrinters'
 
 const props = withDefaults(defineProps<{
   layout?: any

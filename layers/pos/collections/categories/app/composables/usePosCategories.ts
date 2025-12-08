@@ -2,14 +2,14 @@ import { z } from 'zod'
 
 export const posCategorieSchema = z.object({
   eventId: z.string().min(1, 'eventId is required'),
-  name: z.string().min(1, 'name is required'),
+  title: z.string().min(1, 'title is required'),
   displayOrder: z.string().optional()
 })
 
 export const posCategoriesColumns = [
   { accessorKey: 'id', header: 'Id' },
   { accessorKey: 'eventId', header: 'EventId' },
-  { accessorKey: 'name', header: 'Name' },
+  { accessorKey: 'title', header: 'Title' },
   { accessorKey: 'displayOrder', header: 'DisplayOrder' }
 ]
 
@@ -21,7 +21,7 @@ export const posCategoriesConfig = {
   schema: posCategorieSchema,
   defaultValues: {
     eventId: '',
-    name: '',
+    title: '',
     displayOrder: ''
   },
   columns: posCategoriesColumns,

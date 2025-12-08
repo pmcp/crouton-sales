@@ -6,7 +6,7 @@ export interface PosHelper {
   teamId: string
   owner: string
   eventId: string
-  name: string
+  title: string
   token: string
   isActive?: boolean
   expiresAt?: Date | null

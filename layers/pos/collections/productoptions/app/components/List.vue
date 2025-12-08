@@ -24,7 +24,7 @@
 </template>
 
 <script setup lang="ts">
-import { usePosProductOptions } from '../composables/usePosProductOptions'
+import usePosProductOptions from '../composables/usePosProductOptions'
 
 const props = withDefaults(defineProps<{
   layout?: any

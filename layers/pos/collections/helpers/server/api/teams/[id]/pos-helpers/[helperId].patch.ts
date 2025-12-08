@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
   return await updatePosHelper(helperId, team.id, user.id, {
     id: body.id,
     eventId: body.eventId,
-    name: body.name,
+    title: body.title,
     token: body.token,
     isActive: body.isActive,
     expiresAt: body.expiresAt ? new Date(body.expiresAt) : body.expiresAt,

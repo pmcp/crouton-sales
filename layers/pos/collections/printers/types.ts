@@ -7,7 +7,7 @@ export interface PosPrinter {
   owner: string
   eventId: string
   locationId: string
-  name: string
+  title: string
   ipAddress: string
   port?: string
   status?: string

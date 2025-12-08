@@ -69,7 +69,7 @@
 
 <script setup lang="ts">
 import type { PosOrderItemFormProps, PosOrderItemFormData } from '../../types'
-import { usePosOrderItems } from '../composables/usePosOrderItems'
+import usePosOrderItems from '../composables/usePosOrderItems'
 
 const props = defineProps<PosOrderItemFormProps>()
 const { defaultValue, schema, collection } = usePosOrderItems()

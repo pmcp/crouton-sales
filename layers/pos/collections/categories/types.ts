@@ -6,7 +6,7 @@ export interface PosCategorie {
   teamId: string
   owner: string
   eventId: string
-  name: string
+  title: string
   displayOrder?: string
   createdAt: Date
   updatedAt: Date

@@ -38,8 +38,8 @@
             label="LocationId"
           />
         </UFormField>
-        <UFormField label="Name" name="name" class="not-last:pb-4">
-          <UInput v-model="state.name" class="w-full" size="xl" />
+        <UFormField label="Title" name="title" class="not-last:pb-4">
+          <UInput v-model="state.title" class="w-full" size="xl" />
         </UFormField>
         <UFormField label="Description" name="description" class="not-last:pb-4">
           <UTextarea v-model="state.description" class="w-full" size="xl" />
@@ -82,7 +82,7 @@
 
 <script setup lang="ts">
 import type { PosProductFormProps, PosProductFormData } from '../../types'
-import { usePosProducts } from '../composables/usePosProducts'
+import usePosProducts from '../composables/usePosProducts'
 
 const props = defineProps<PosProductFormProps>()
 const { defaultValue, schema, collection } = usePosProducts()

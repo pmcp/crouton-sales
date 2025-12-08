@@ -17,8 +17,8 @@
     <CroutonFormLayout>
       <template #main>
       <div class="flex flex-col gap-4 p-1">
-        <UFormField label="Name" name="name" class="not-last:pb-4">
-          <UInput v-model="state.name" class="w-full" size="xl" />
+        <UFormField label="Title" name="title" class="not-last:pb-4">
+          <UInput v-model="state.title" class="w-full" size="xl" />
         </UFormField>
         <UFormField label="Slug" name="slug" class="not-last:pb-4">
           <UInput v-model="state.slug" class="w-full" size="xl" />
@@ -73,7 +73,7 @@
 
 <script setup lang="ts">
 import type { PosEventFormProps, PosEventFormData } from '../../types'
-import { usePosEvents } from '../composables/usePosEvents'
+import usePosEvents from '../composables/usePosEvents'
 
 const props = defineProps<PosEventFormProps>()
 const { defaultValue, schema, collection } = usePosEvents()

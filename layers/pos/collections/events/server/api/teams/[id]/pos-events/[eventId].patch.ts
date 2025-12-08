@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
 
   return await updatePosEvent(eventId, team.id, user.id, {
     id: body.id,
-    name: body.name,
+    title: body.title,
     slug: body.slug,
     description: body.description,
     eventType: body.eventType,

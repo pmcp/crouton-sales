@@ -8,7 +8,7 @@ export interface PosProduct {
   eventId: string
   categoryId?: string
   locationId?: string
-  name: string
+  title: string
   description?: string
   price: number
   isActive?: boolean

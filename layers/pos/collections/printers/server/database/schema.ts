@@ -24,7 +24,7 @@ export const posPrinters = sqliteTable('pos_printers', {
   owner: text('owner').notNull(),
   eventId: text('eventId').notNull(),
   locationId: text('locationId').notNull(),
-  name: text('name').notNull(),
+  title: text('title').notNull(),
   ipAddress: text('ipAddress').notNull(),
   port: text('port'),
   status: text('status'),

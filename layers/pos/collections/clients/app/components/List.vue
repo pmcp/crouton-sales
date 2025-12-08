@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import { usePosClients } from '../composables/usePosClients'
+import usePosClients from '../composables/usePosClients'
 
 const props = withDefaults(defineProps<{
   layout?: any

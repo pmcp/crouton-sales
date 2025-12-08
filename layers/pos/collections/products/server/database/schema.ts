@@ -25,7 +25,7 @@ export const posProducts = sqliteTable('pos_products', {
   eventId: text('eventId').notNull(),
   categoryId: text('categoryId'),
   locationId: text('locationId'),
-  name: text('name').notNull(),
+  title: text('title').notNull(),
   description: text('description'),
   price: real('price').notNull(),
   isActive: integer('isActive', { mode: 'boolean' }).$default(() => false),

@@ -24,7 +24,7 @@
 </template>
 
 <script setup lang="ts">
-import { usePosCategories } from '../composables/usePosCategories'
+import usePosCategories from '../composables/usePosCategories'
 
 const props = withDefaults(defineProps<{
   layout?: any

@@ -31,8 +31,8 @@
             label="LocationId"
           />
         </UFormField>
-        <UFormField label="Name" name="name" class="not-last:pb-4">
-          <UInput v-model="state.name" class="w-full" size="xl" />
+        <UFormField label="Title" name="title" class="not-last:pb-4">
+          <UInput v-model="state.title" class="w-full" size="xl" />
         </UFormField>
         <UFormField label="IpAddress" name="ipAddress" class="not-last:pb-4">
           <UInput v-model="state.ipAddress" class="w-full" size="xl" />
@@ -66,7 +66,7 @@
 
 <script setup lang="ts">
 import type { PosPrinterFormProps, PosPrinterFormData } from '../../types'
-import { usePosPrinters } from '../composables/usePosPrinters'
+import usePosPrinters from '../composables/usePosPrinters'
 
 const props = defineProps<PosPrinterFormProps>()
 const { defaultValue, schema, collection } = usePosPrinters()

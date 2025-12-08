@@ -24,7 +24,7 @@
 </template>
 
 <script setup lang="ts">
-import { usePosLocations } from '../composables/usePosLocations'
+import usePosLocations from '../composables/usePosLocations'
 
 const props = withDefaults(defineProps<{
   layout?: any

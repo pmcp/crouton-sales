@@ -17,8 +17,8 @@
     <CroutonFormLayout>
       <template #main>
       <div class="flex flex-col gap-4 p-1">
-        <UFormField label="Name" name="name" class="not-last:pb-4">
-          <UInput v-model="state.name" class="w-full" size="xl" />
+        <UFormField label="Title" name="title" class="not-last:pb-4">
+          <UInput v-model="state.title" class="w-full" size="xl" />
         </UFormField>
         <UFormField label="IsReusable" name="isReusable" class="not-last:pb-4">
           <UCheckbox v-model="state.isReusable" />
@@ -40,7 +40,7 @@
 
 <script setup lang="ts">
 import type { PosClientFormProps, PosClientFormData } from '../../types'
-import { usePosClients } from '../composables/usePosClients'
+import usePosClients from '../composables/usePosClients'
 
 const props = defineProps<PosClientFormProps>()
 const { defaultValue, schema, collection } = usePosClients()

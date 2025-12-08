@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
   return await updatePosCategorie(categorieId, team.id, user.id, {
     id: body.id,
     eventId: body.eventId,
-    name: body.name,
+    title: body.title,
     displayOrder: body.displayOrder
   })
 })

@@ -24,8 +24,8 @@
             label="EventId"
           />
         </UFormField>
-        <UFormField label="Name" name="name" class="not-last:pb-4">
-          <UInput v-model="state.name" class="w-full" size="xl" />
+        <UFormField label="Title" name="title" class="not-last:pb-4">
+          <UInput v-model="state.title" class="w-full" size="xl" />
         </UFormField>
         <UFormField label="DisplayOrder" name="displayOrder" class="not-last:pb-4">
           <UInput v-model="state.displayOrder" class="w-full" size="xl" />
@@ -47,7 +47,7 @@
 
 <script setup lang="ts">
 import type { PosCategorieFormProps, PosCategorieFormData } from '../../types'
-import { usePosCategories } from '../composables/usePosCategories'
+import usePosCategories from '../composables/usePosCategories'
 
 const props = defineProps<PosCategorieFormProps>()
 const { defaultValue, schema, collection } = usePosCategories()

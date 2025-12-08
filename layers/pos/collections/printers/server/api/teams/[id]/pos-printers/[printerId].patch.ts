@@ -16,7 +16,7 @@ export default defineEventHandler(async (event) => {
     id: body.id,
     eventId: body.eventId,
     locationId: body.locationId,
-    name: body.name,
+    title: body.title,
     ipAddress: body.ipAddress,
     port: body.port,
     status: body.status,

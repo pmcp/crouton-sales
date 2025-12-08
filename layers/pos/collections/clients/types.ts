@@ -5,7 +5,7 @@ export interface PosClient {
   id: string
   teamId: string
   owner: string
-  name: string
+  title: string
   isReusable?: boolean
   createdAt: Date
   updatedAt: Date

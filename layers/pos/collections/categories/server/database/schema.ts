@@ -23,7 +23,7 @@ export const posCategories = sqliteTable('pos_categories', {
   teamId: text('teamId').notNull(),
   owner: text('owner').notNull(),
   eventId: text('eventId').notNull(),
-  name: text('name').notNull(),
+  title: text('title').notNull(),
   displayOrder: text('displayOrder'),
 
   createdAt: integer('createdAt', { mode: 'timestamp' }).notNull().$default(() => new Date()),

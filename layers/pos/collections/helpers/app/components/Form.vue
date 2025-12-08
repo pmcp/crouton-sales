@@ -24,8 +24,8 @@
             label="EventId"
           />
         </UFormField>
-        <UFormField label="Name" name="name" class="not-last:pb-4">
-          <UInput v-model="state.name" class="w-full" size="xl" />
+        <UFormField label="Title" name="title" class="not-last:pb-4">
+          <UInput v-model="state.title" class="w-full" size="xl" />
         </UFormField>
         <UFormField label="Token" name="token" class="not-last:pb-4">
           <UInput v-model="state.token" class="w-full" size="xl" />
@@ -56,7 +56,7 @@
 
 <script setup lang="ts">
 import type { PosHelperFormProps, PosHelperFormData } from '../../types'
-import { usePosHelpers } from '../composables/usePosHelpers'
+import usePosHelpers from '../composables/usePosHelpers'
 
 const props = defineProps<PosHelperFormProps>()
 const { defaultValue, schema, collection } = usePosHelpers()

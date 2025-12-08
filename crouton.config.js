@@ -63,7 +63,7 @@ export default {
     // Skip translation/i18n fields
     noTranslations: true,
 
-    // Don't force overwrite existing files
+    // Force overwrite existing files
     force: false,
 
     // Generate database tables
