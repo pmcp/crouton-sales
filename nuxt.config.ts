@@ -2,6 +2,10 @@ import './env'
 import vue from '@vitejs/plugin-vue'
 
 export default defineNuxtConfig({
+  extends: [
+    '@friendlyinternet/nuxt-crouton',
+    './layers/pos'
+  ],
   modules: [
     '@nuxthub/core',
     '@nuxt/ui',

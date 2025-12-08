@@ -1,0 +1,9 @@
+{
+  "id": { "type": "uuid", "meta": { "primaryKey": true } },
+  "eventId": { "type": "uuid", "refTarget": "events", "meta": { "required": true, "label": "Event" } },
+  "name": { "type": "string", "meta": { "required": true, "label": "Helper Name", "maxLength": 100 } },
+  "token": { "type": "string", "meta": { "required": true, "unique": true, "label": "Access Token" } },
+  "isActive": { "type": "boolean", "meta": { "label": "Active", "default": true } },
+  "expiresAt": { "type": "date", "meta": { "label": "Expires At" } },
+  "lastActiveAt": { "type": "date", "meta": { "label": "Last Active" } }
+}
