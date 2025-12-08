@@ -31,8 +31,7 @@ export default defineNuxtConfig({
       host: process.env.BASE_URL,
     },
   },
-  future: { compatibilityVersion: 4 },
-  compatibilityDate: '2024-07-30',
+  compatibilityDate: '2024-12-01',
   nitro: {
     rollupConfig: {
       // @ts-expect-error - Rollup plugin type definitions are incomplete for vue plugin
