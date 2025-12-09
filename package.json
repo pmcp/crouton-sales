@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@friendlyinternet/nuxt-crouton": "^1.6.0",
+    "@friendlyinternet/nuxt-crouton-events": "^0.3.0",
     "@iconify-json/lucide": "^1.2.45",
     "@nuxt/eslint": "^1.4.1",
     "@nuxt/ui": "^4.0.0",
