@@ -4,7 +4,8 @@ import vue from '@vitejs/plugin-vue'
 export default defineNuxtConfig({
   extends: [
     '@friendlyinternet/nuxt-crouton',
-    './layers/pos'
+    './layers/pos',
+    './layers/pos-views',
   ],
   modules: [
     '@nuxthub/core',
