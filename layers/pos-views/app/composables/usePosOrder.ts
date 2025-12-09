@@ -62,18 +62,20 @@ export function usePosOrder() {
     // Create the order
     const order = await createOrder({
       eventId: selectedEventId.value,
-      clientId: selectedClientId.value,
+      clientId: selectedClientId.value || undefined,
       status: 'pending',
-      total: cartTotal.value,
     })
 
     // Create order items
     for (const item of cartItems.value) {
+      const unitPrice = Number(item.product.price)
+      const totalPrice = unitPrice * item.quantity
       await createOrderItem({
         orderId: order.id,
         productId: item.product.id,
-        quantity: item.quantity,
-        price: Number(item.product.price),
+        quantity: String(item.quantity), // Schema expects text
+        unitPrice,
+        totalPrice,
       })
     }
 

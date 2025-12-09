@@ -43,6 +43,11 @@ const posLinks = computed(() => [
     to: `/dashboard/${currentTeam.value.slug}/pos`,
   },
   {
+    label: 'Orders',
+    icon: 'i-lucide-receipt',
+    to: `/dashboard/${currentTeam.value.slug}/pos/orders`,
+  },
+  {
     label: 'Products',
     icon: 'i-lucide-package',
     to: `/dashboard/${currentTeam.value.slug}/pos/products`,
