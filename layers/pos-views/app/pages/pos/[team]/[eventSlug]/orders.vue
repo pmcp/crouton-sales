@@ -91,7 +91,6 @@
                       :use-reusable-clients="orderData?.settings.useReusableClients || false"
                       @update:client-id="onClientIdChange"
                       @update:client-name="onClientNameChange"
-                      @create-client="onCreateClient"
                     />
                   </div>
 
@@ -137,7 +136,6 @@
               :use-reusable-clients="orderData?.settings.useReusableClients || false"
               @update:client-id="onClientIdChange"
               @update:client-name="onClientNameChange"
-              @create-client="onCreateClient"
             />
           </div>
 

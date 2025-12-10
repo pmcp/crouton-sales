@@ -1,12 +1,5 @@
 <template>
-  <UCard class="flex flex-col h-full" :ui="{ body: 'flex-1 overflow-y-auto', footer: 'space-y-4' }">
-    <template #header>
-      <div class="flex items-center justify-between">
-        <span class="font-semibold">Items</span>
-        <UBadge v-if="items.length > 0" :label="items.length" size="sm" variant="subtle" />
-      </div>
-    </template>
-
+  <UCard class="flex flex-col h-full" :ui="{ root: 'rounded-none', body: 'flex-1 overflow-y-auto', footer: 'space-y-4' }">
     <!-- Cart items -->
     <p v-if="items.length === 0" class="text-center text-muted py-8">
       Cart is empty
@@ -55,7 +48,10 @@
 
     <template #footer>
       <div class="flex justify-between items-center">
-        <span class="text-lg font-semibold">Total</span>
+        <div class="flex items-center gap-2">
+          <span class="text-lg font-semibold">Total</span>
+          <UBadge v-if="items.length > 0" :label="items.length" size="sm" />
+        </div>
         <span class="text-2xl font-bold">${{ total.toFixed(2) }}</span>
       </div>
 
