@@ -19,3 +19,4 @@ export { posOrderitems } from '../../../layers/pos/collections/orderitems/server
 export { posHelpers } from '../../../layers/pos/collections/helpers/server/database/schema'
 export { posClients } from '../../../layers/pos/collections/clients/server/database/schema'
 export { posEventsettings } from '../../../layers/pos/collections/eventsettings/server/database/schema'
+export { croutonCollectionEvents } from '../../../layers/crouton-events/server/database/schema'
