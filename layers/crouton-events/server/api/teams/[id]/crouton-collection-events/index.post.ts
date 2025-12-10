@@ -13,6 +13,11 @@ export default defineEventHandler(async (event) => {
   // Exclude id field to let the database generate it
   const { id, ...dataWithoutId } = body
 
+  // Convert date string to Date object
+  if (dataWithoutId.timestamp) {
+    dataWithoutId.timestamp = new Date(dataWithoutId.timestamp)
+  }
+
   return await createCroutonCollectionEvent({
     ...dataWithoutId,
     teamId: team.id,
