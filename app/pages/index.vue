@@ -22,12 +22,13 @@
               label="Go to App"
               to="/dashboard"
             />
-            <UButtonGroup v-else>
+            <div v-else class="inline-flex items-center rounded-md">
               <UButton
                 color="neutral"
                 variant="soft"
                 to="/auth/login"
                 label="Login"
+                class="rounded-r-none"
               />
               <UDropdownMenu
                 :items="authOptions"
@@ -45,10 +46,10 @@
                   color="neutral"
                   variant="soft"
                   icon="i-lucide-chevron-down"
-                  class="border-l border-neutral-200/50 dark:border-white/10"
+                  class="rounded-l-none border-l border-neutral-200/50 dark:border-white/10"
                 />
               </UDropdownMenu>
-            </UButtonGroup>
+            </div>
           </AuthState>
           <ThemeToggle />
         </div>
