@@ -73,7 +73,7 @@
           label="Pay"
           size="lg"
           block
-          :disabled="disabled || items.length === 0"
+          :disabled="disabled || items.length === 0 || (clientRequired && !hasClient)"
           @click="$emit('checkout')"
         />
       </div>
@@ -95,6 +95,8 @@ defineProps<{
   items: CartItem[]
   total: number
   disabled: boolean
+  clientRequired?: boolean
+  hasClient?: boolean
 }>()
 
 defineEmits<{

@@ -1,12 +1,14 @@
 <template>
   <div class="space-y-2">
+    <label class="text-sm font-medium text-muted">Client</label>
+
     <!-- Reusable clients mode: dropdown with search -->
     <template v-if="useReusableClients">
       <USelectMenu
         v-model="selectedClientId"
         :items="clientItems"
         value-key="value"
-        placeholder="Select client..."
+        placeholder="Select or create client..."
         icon="i-lucide-user"
         size="lg"
         class="w-full"
@@ -19,7 +21,7 @@
     <template v-else>
       <UInput
         v-model="clientName"
-        placeholder="Client name (optional)"
+        placeholder="Enter client name..."
         icon="i-lucide-user"
         size="lg"
         class="w-full"

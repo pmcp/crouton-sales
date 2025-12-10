@@ -86,7 +86,7 @@
                 <div class="h-[70vh] flex flex-col">
                   <!-- Client selector -->
                   <div class="p-4 border-b shrink-0">
-                    <ClientClientSelector
+                    <ClientSelector
                       :clients="orderData?.clients || []"
                       :use-reusable-clients="orderData?.settings.useReusableClients || false"
                       @update:client-id="onClientIdChange"
@@ -101,6 +101,8 @@
                       :items="cartItems"
                       :total="cartTotal"
                       :disabled="!isOnline"
+                      :client-required="true"
+                      :has-client="hasClient"
                       @update-quantity="updateQuantity"
                       @remove="removeFromCart"
                       @checkout="handleCheckout"
@@ -130,7 +132,7 @@
         <div class="flex flex-col h-full">
           <!-- Client selector -->
           <div class="p-4 border-b">
-            <ClientClientSelector
+            <ClientSelector
               :clients="orderData?.clients || []"
               :use-reusable-clients="orderData?.settings.useReusableClients || false"
               @update:client-id="onClientIdChange"
@@ -145,6 +147,8 @@
               :items="cartItems"
               :total="cartTotal"
               :disabled="!isOnline"
+              :client-required="true"
+              :has-client="hasClient"
               @update-quantity="updateQuantity"
               @remove="removeFromCart"
               @checkout="handleCheckout"
@@ -201,6 +205,16 @@ const selectedCategory = ref<string | null>(null)
 // Client selection state
 const selectedClientId = ref<string | null>(null)
 const selectedClientName = ref('')
+
+// Check if we have a valid client selected
+const hasClient = computed(() => {
+  if (orderData.value?.settings.useReusableClients) {
+    // In reusable mode, need either a selected client ID or a name (for newly created)
+    return !!selectedClientId.value || !!selectedClientName.value.trim()
+  }
+  // In free-text mode, need a name
+  return !!selectedClientName.value.trim()
+})
 
 const cartTotal = computed(() => {
   return cartItems.value.reduce((total, item) => {
