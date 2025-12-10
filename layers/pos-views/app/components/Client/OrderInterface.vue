@@ -7,7 +7,8 @@
     </div>
 
     <template v-else>
-      <div class="p-4 border-b">
+      <!-- Category tabs -->
+      <div class="p-2 border-b shrink-0">
         <ClientCategoryTabs
           v-model="selectedCategory"
           :categories="categories || []"
@@ -15,15 +16,18 @@
         />
       </div>
 
+      <!-- Main content area -->
       <div class="flex-1 flex overflow-hidden">
-        <div class="flex-1 overflow-y-auto p-4">
+        <!-- Products grid -->
+        <div class="flex-1 overflow-y-auto p-2">
           <ClientProductList
             :products="filteredProducts"
             @select="addToCart"
           />
         </div>
 
-        <div class="w-80 border-l overflow-y-auto bg-gray-50 dark:bg-gray-900">
+        <!-- Cart sidebar (desktop only) -->
+        <div class="hidden md:flex w-80 border-l flex-col">
           <ClientCart
             :items="cartItems"
             :total="cartTotal"
@@ -34,6 +38,34 @@
             @clear="clearCart"
           />
         </div>
+      </div>
+
+      <!-- Mobile cart button -->
+      <div class="md:hidden border-t p-2">
+        <UDrawer direction="bottom">
+          <UButton
+            block
+            size="lg"
+            :label="cartItems.length > 0 ? `Cart (${cartItems.length}) - $${cartTotal.toFixed(2)}` : 'Cart is empty'"
+            :icon="cartItems.length > 0 ? 'i-lucide-shopping-cart' : 'i-lucide-shopping-cart'"
+            :color="cartItems.length > 0 ? 'primary' : 'neutral'"
+            :variant="cartItems.length > 0 ? 'solid' : 'soft'"
+          />
+
+          <template #content>
+            <div class="h-[70vh]">
+              <ClientCart
+                :items="cartItems"
+                :total="cartTotal"
+                :disabled="!isOnline"
+                @update-quantity="updateQuantity"
+                @remove="removeFromCart"
+                @checkout="handleCheckout"
+                @clear="clearCart"
+              />
+            </div>
+          </template>
+        </UDrawer>
       </div>
     </template>
   </div>

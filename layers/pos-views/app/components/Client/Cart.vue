@@ -1,77 +1,95 @@
 <template>
-  <div class="h-full flex flex-col p-4">
-    <h2 class="text-lg font-bold mb-4">Cart</h2>
+  <UCard class="flex flex-col h-full" :ui="{ body: 'flex-1 overflow-y-auto', footer: 'space-y-4' }">
+    <template #header>
+      <div class="flex items-center justify-between">
+        <span class="font-semibold">Items</span>
+        <UBadge v-if="items.length > 0" :label="items.length" size="sm" variant="subtle" />
+      </div>
+    </template>
 
-    <div v-if="items.length === 0" class="flex-1 flex items-center justify-center text-gray-500">
+    <!-- Cart items -->
+    <p v-if="items.length === 0" class="text-center text-muted py-8">
       Cart is empty
-    </div>
+    </p>
 
-    <div v-else class="flex-1 overflow-y-auto space-y-3">
+    <div v-else class="space-y-2">
       <div
         v-for="item in items"
         :key="item.product.id"
-        class="flex items-center gap-2 p-2 bg-gray-50 dark:bg-gray-800 rounded"
+        class="flex items-center justify-between gap-2 py-2"
       >
         <div class="flex-1 min-w-0">
-          <div class="font-medium truncate">{{ item.product.title }}</div>
-          <div class="text-sm text-gray-500">${{ Number(item.product.price).toFixed(2) }}</div>
+          <p class="font-medium truncate">{{ item.product.title }}</p>
+          <p class="text-sm text-muted">${{ Number(item.product.price).toFixed(2) }} each</p>
         </div>
 
-        <div class="flex items-center gap-1">
+        <div class="flex items-center gap-2">
           <UButton
             icon="i-lucide-minus"
-            size="xs"
-            variant="ghost"
+            size="sm"
+            color="neutral"
+            variant="soft"
+            square
             @click="$emit('updateQuantity', item.product.id, item.quantity - 1)"
           />
-          <span class="w-8 text-center">{{ item.quantity }}</span>
+          <span class="w-8 text-center font-medium">{{ item.quantity }}</span>
           <UButton
             icon="i-lucide-plus"
-            size="xs"
-            variant="ghost"
+            size="sm"
+            color="neutral"
+            variant="soft"
+            square
             @click="$emit('updateQuantity', item.product.id, item.quantity + 1)"
           />
+          <UButton
+            icon="i-lucide-x"
+            size="sm"
+            color="error"
+            variant="ghost"
+            square
+            @click="$emit('remove', item.product.id)"
+          />
         </div>
-
-        <UButton
-          icon="i-lucide-trash-2"
-          size="xs"
-          color="red"
-          variant="ghost"
-          @click="$emit('remove', item.product.id)"
-        />
       </div>
     </div>
 
-    <div class="border-t pt-4 mt-4 space-y-3">
-      <div class="flex justify-between text-lg font-bold">
-        <span>Total</span>
-        <span>${{ total.toFixed(2) }}</span>
+    <template #footer>
+      <div class="flex justify-between items-center">
+        <span class="text-lg font-semibold">Total</span>
+        <span class="text-2xl font-bold">${{ total.toFixed(2) }}</span>
       </div>
 
-      <div class="flex gap-2">
+      <div class="grid grid-cols-2 gap-2">
         <UButton
-          variant="ghost"
-          class="flex-1"
+          label="Clear"
+          color="neutral"
+          variant="soft"
+          size="lg"
+          block
           :disabled="items.length === 0"
           @click="$emit('clear')"
-        >
-          Clear
-        </UButton>
+        />
         <UButton
-          class="flex-1"
+          label="Pay"
+          size="lg"
+          block
           :disabled="disabled || items.length === 0"
           @click="$emit('checkout')"
-        >
-          Checkout
-        </UButton>
+        />
       </div>
-    </div>
-  </div>
+    </template>
+  </UCard>
 </template>
 
 <script setup lang="ts">
-import type { CartItem } from '../../composables/usePosOrder'
+interface CartItem {
+  product: {
+    id: string
+    title: string
+    price: number
+  }
+  quantity: number
+}
 
 defineProps<{
   items: CartItem[]

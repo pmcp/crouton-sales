@@ -29,6 +29,7 @@
                 v-model="formState.helperName"
                 placeholder="Enter your name"
                 size="lg"
+                class="w-full"
                 autofocus
               />
             </UFormField>
@@ -39,6 +40,7 @@
                 type="password"
                 placeholder="Enter PIN"
                 size="lg"
+                class="w-full"
                 :ui="{ base: 'font-mono text-center tracking-widest' }"
                 inputmode="numeric"
                 pattern="[0-9]*"

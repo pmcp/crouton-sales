@@ -1,17 +1,20 @@
 <template>
-  <div v-if="products.length === 0" class="text-center text-gray-500 py-8">
+  <div v-if="products.length === 0" class="text-center text-muted py-8">
     No products found
   </div>
-  <div v-else class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-    <UCard
+  <div v-else class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
+    <UButton
       v-for="product in products"
       :key="product.id"
-      class="cursor-pointer hover:ring-2 hover:ring-primary transition-all"
+      color="neutral"
+      variant="soft"
+      size="xl"
+      class="h-auto py-4 flex-col items-start"
       @click="$emit('select', product)"
     >
-      <div class="font-medium">{{ product.title }}</div>
-      <div class="text-lg font-bold text-primary">${{ Number(product.price).toFixed(2) }}</div>
-    </UCard>
+      <span class="font-medium">{{ product.title }}</span>
+      <span class="text-primary font-bold">${{ Number(product.price).toFixed(2) }}</span>
+    </UButton>
   </div>
 </template>
 
