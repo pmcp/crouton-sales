@@ -119,7 +119,6 @@ import type { PosEventSetting } from '~~/layers/pos/collections/eventsettings/ty
 definePageMeta({ middleware: ['auth'] })
 
 const route = useRoute()
-const toast = useToast()
 const eventSlug = computed(() => route.params.eventSlug as string)
 
 // Fetch events and find the one matching the slug
@@ -174,13 +173,11 @@ async function saveClientModeSetting(value: boolean) {
     const { create, update } = useCollectionMutation('posEventSettings')
 
     if (clientModeSetting.value) {
-      // Update existing setting
       await update(clientModeSetting.value.id, {
         settingValue: String(value),
       })
     }
     else {
-      // Create new setting
       await create({
         eventId: event.value.id,
         settingKey: 'use_reusable_clients',
@@ -190,22 +187,10 @@ async function saveClientModeSetting(value: boolean) {
     }
 
     await refreshSettings()
-
-    toast.add({
-      title: 'Setting saved',
-      description: `Client mode set to ${value ? 'reusable clients' : 'custom names'}`,
-      color: 'success',
-    })
   }
   catch (error) {
     // Revert the switch on error
     useReusableClients.value = !value
-
-    toast.add({
-      title: 'Error',
-      description: error instanceof Error ? error.message : 'Failed to save setting',
-      color: 'error',
-    })
   }
   finally {
     savingClientMode.value = false
@@ -226,19 +211,6 @@ async function saveHelperPin() {
     })
 
     originalHelperPin.value = helperPin.value
-
-    toast.add({
-      title: 'PIN saved',
-      description: helperPin.value ? 'Helper PIN has been updated' : 'Helper PIN has been removed',
-      color: 'success',
-    })
-  }
-  catch (error) {
-    toast.add({
-      title: 'Error',
-      description: error instanceof Error ? error.message : 'Failed to save PIN',
-      color: 'error',
-    })
   }
   finally {
     savingHelperPin.value = false
