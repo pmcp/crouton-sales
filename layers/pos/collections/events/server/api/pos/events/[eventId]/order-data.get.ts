@@ -3,6 +3,8 @@ import { posEvents } from '~~/layers/pos/collections/events/server/database/sche
 import { posHelpers } from '~~/layers/pos/collections/helpers/server/database/schema'
 import { posProducts } from '~~/layers/pos/collections/products/server/database/schema'
 import { posCategories } from '~~/layers/pos/collections/categories/server/database/schema'
+import { posClients } from '~~/layers/pos/collections/clients/server/database/schema'
+import { posEventsettings } from '~~/layers/pos/collections/eventsettings/server/database/schema'
 
 // Helper-authenticated endpoint to get all data needed for order interface
 export default defineEventHandler(async (event) => {
@@ -81,6 +83,29 @@ export default defineEventHandler(async (event) => {
     .from(posCategories)
     .where(eq(posCategories.teamId, posEvent.teamId))
 
+  // Get event settings
+  const settings = await db
+    .select()
+    .from(posEventsettings)
+    .where(eq(posEventsettings.eventId, eventId))
+
+  // Convert settings array to object
+  const settingsObj: Record<string, string> = {}
+  for (const setting of settings) {
+    settingsObj[setting.settingKey] = setting.settingValue || ''
+  }
+
+  const useReusableClients = settingsObj.use_reusable_clients === 'true'
+
+  // Get clients for this team (only if using reusable clients mode)
+  let clients: { id: string; title: string }[] = []
+  if (useReusableClients) {
+    clients = await db
+      .select({ id: posClients.id, title: posClients.title })
+      .from(posClients)
+      .where(eq(posClients.teamId, posEvent.teamId))
+  }
+
   return {
     event: {
       id: posEvent.id,
@@ -90,6 +115,10 @@ export default defineEventHandler(async (event) => {
     },
     products,
     categories,
+    clients,
+    settings: {
+      useReusableClients,
+    },
     helper: {
       id: helper.id,
       name: helper.title,

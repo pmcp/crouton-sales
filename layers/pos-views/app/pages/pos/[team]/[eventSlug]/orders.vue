@@ -83,16 +83,30 @@
               />
 
               <template #content>
-                <div class="h-[70vh]">
-                  <ClientCart
-                    :items="cartItems"
-                    :total="cartTotal"
-                    :disabled="!isOnline"
-                    @update-quantity="updateQuantity"
-                    @remove="removeFromCart"
-                    @checkout="handleCheckout"
-                    @clear="clearCart"
-                  />
+                <div class="h-[70vh] flex flex-col">
+                  <!-- Client selector -->
+                  <div class="p-4 border-b shrink-0">
+                    <ClientClientSelector
+                      :clients="orderData?.clients || []"
+                      :use-reusable-clients="orderData?.settings.useReusableClients || false"
+                      @update:client-id="onClientIdChange"
+                      @update:client-name="onClientNameChange"
+                      @create-client="onCreateClient"
+                    />
+                  </div>
+
+                  <!-- Cart -->
+                  <div class="flex-1 min-h-0">
+                    <ClientCart
+                      :items="cartItems"
+                      :total="cartTotal"
+                      :disabled="!isOnline"
+                      @update-quantity="updateQuantity"
+                      @remove="removeFromCart"
+                      @checkout="handleCheckout"
+                      @clear="clearCart"
+                    />
+                  </div>
                 </div>
               </template>
             </UDrawer>
@@ -113,15 +127,31 @@
           </UDashboardNavbar>
         </template>
 
-        <ClientCart
-          :items="cartItems"
-          :total="cartTotal"
-          :disabled="!isOnline"
-          @update-quantity="updateQuantity"
-          @remove="removeFromCart"
-          @checkout="handleCheckout"
-          @clear="clearCart"
-        />
+        <div class="flex flex-col h-full">
+          <!-- Client selector -->
+          <div class="p-4 border-b">
+            <ClientClientSelector
+              :clients="orderData?.clients || []"
+              :use-reusable-clients="orderData?.settings.useReusableClients || false"
+              @update:client-id="onClientIdChange"
+              @update:client-name="onClientNameChange"
+              @create-client="onCreateClient"
+            />
+          </div>
+
+          <!-- Cart -->
+          <div class="flex-1 min-h-0">
+            <ClientCart
+              :items="cartItems"
+              :total="cartTotal"
+              :disabled="!isOnline"
+              @update-quantity="updateQuantity"
+              @remove="removeFromCart"
+              @checkout="handleCheckout"
+              @clear="clearCart"
+            />
+          </div>
+        </div>
       </UDashboardPanel>
     </template>
   </main>
@@ -131,10 +161,17 @@
 import type { PosProduct } from '~~/layers/pos/collections/products/types'
 import type { PosCategory } from '~~/layers/pos/collections/categories/types'
 
+interface Client {
+  id: string
+  title: string
+}
+
 interface OrderData {
   event: { id: string; title: string; slug: string; teamId: string }
   products: PosProduct[]
   categories: PosCategory[]
+  clients: Client[]
+  settings: { useReusableClients: boolean }
   helper: { id: string; name: string }
 }
 
@@ -160,6 +197,10 @@ const orderData = ref<OrderData | null>(null)
 // Cart state
 const cartItems = ref<CartItem[]>([])
 const selectedCategory = ref<string | null>(null)
+
+// Client selection state
+const selectedClientId = ref<string | null>(null)
+const selectedClientName = ref('')
 
 const cartTotal = computed(() => {
   return cartItems.value.reduce((total, item) => {
@@ -217,6 +258,24 @@ function updateQuantity(productId: string, quantity: number) {
 
 function clearCart() {
   cartItems.value = []
+  selectedClientId.value = null
+  selectedClientName.value = ''
+}
+
+// Client functions
+function onClientIdChange(clientId: string | null) {
+  selectedClientId.value = clientId
+}
+
+function onClientNameChange(name: string) {
+  selectedClientName.value = name
+}
+
+async function onCreateClient(name: string) {
+  // For now, just use the name as free-text
+  // In the future, we could create a new client in the database
+  selectedClientName.value = name
+  selectedClientId.value = null
 }
 
 async function loadData() {
@@ -291,6 +350,8 @@ async function handleCheckout() {
           productName: item.product.title,
         })),
         total: cartTotal.value,
+        clientId: selectedClientId.value || undefined,
+        clientName: selectedClientName.value || undefined,
       },
     })
 
