@@ -3,12 +3,36 @@ import type { PosProduct } from '~~/layers/pos/collections/products/types'
 export interface CartItem {
   product: PosProduct
   quantity: number
+  remarks?: string
+  selectedOptions?: Record<string, any>
+}
+
+interface OrderItem {
+  productId: string
+  quantity: number
+  price: number
+  productName?: string
+  remarks?: string
+  selectedOptions?: Record<string, any>
+}
+
+interface CreateOrderResponse {
+  order: {
+    id: string
+    eventOrderNumber: string
+    status: string
+  }
+  items: any[]
+  eventOrderNumber: string
 }
 
 export function usePosOrder() {
   const cartItems = ref<CartItem[]>([])
   const selectedEventId = ref<string | null>(null)
   const selectedClientId = ref<string | null>(null)
+  const selectedClientName = ref<string | null>(null)
+  const overallRemarks = ref<string | null>(null)
+  const isPersonnel = ref(false)
 
   const cartTotal = computed(() =>
     cartItems.value.reduce((sum, item) => sum + (Number(item.product.price) * item.quantity), 0),
@@ -18,8 +42,16 @@ export function usePosOrder() {
     cartItems.value.reduce((sum, item) => sum + item.quantity, 0),
   )
 
-  function addToCart(product: PosProduct) {
-    const existing = cartItems.value.find(i => i.product.id === product.id)
+  function addToCart(product: PosProduct, remarks?: string, selectedOptions?: Record<string, any>) {
+    // If product has remarks or options, always add as new item
+    if (remarks || selectedOptions) {
+      cartItems.value.push({ product, quantity: 1, remarks, selectedOptions })
+      return
+    }
+
+    const existing = cartItems.value.find(i =>
+      i.product.id === product.id && !i.remarks && !i.selectedOptions
+    )
     if (existing) {
       existing.quantity++
     }
@@ -28,26 +60,29 @@ export function usePosOrder() {
     }
   }
 
-  function removeFromCart(productId: string) {
-    const index = cartItems.value.findIndex(i => i.product.id === productId)
-    if (index > -1)
+  function removeFromCart(index: number) {
+    if (index >= 0 && index < cartItems.value.length) {
       cartItems.value.splice(index, 1)
+    }
   }
 
-  function updateQuantity(productId: string, quantity: number) {
-    const item = cartItems.value.find(i => i.product.id === productId)
-    if (item) {
-      if (quantity <= 0)
-        removeFromCart(productId)
-      else item.quantity = quantity
+  function updateQuantity(index: number, quantity: number) {
+    if (index >= 0 && index < cartItems.value.length) {
+      if (quantity <= 0) {
+        removeFromCart(index)
+      } else {
+        cartItems.value[index].quantity = quantity
+      }
     }
   }
 
   function clearCart() {
     cartItems.value = []
+    overallRemarks.value = null
+    isPersonnel.value = false
   }
 
-  async function checkout() {
+  async function checkout(): Promise<CreateOrderResponse> {
     if (!selectedEventId.value) {
       throw new Error('No event selected')
     }
@@ -56,40 +91,58 @@ export function usePosOrder() {
       throw new Error('Cart is empty')
     }
 
-    const { create: createOrder } = useCollectionMutation('posOrders')
-    const { create: createOrderItem } = useCollectionMutation('posOrderItems')
+    // Build order items
+    const items: OrderItem[] = cartItems.value.map(item => ({
+      productId: item.product.id,
+      quantity: item.quantity,
+      price: Number(item.product.price),
+      productName: item.product.title,
+      remarks: item.remarks,
+      selectedOptions: item.selectedOptions,
+    }))
 
-    // Create the order
-    const order = await createOrder({
-      eventId: selectedEventId.value,
-      clientId: selectedClientId.value || undefined,
-      status: 'pending',
-    })
+    // Create order via helper-authenticated endpoint
+    const response = await $fetch<CreateOrderResponse>(
+      `/api/pos/events/${selectedEventId.value}/orders`,
+      {
+        method: 'POST',
+        body: {
+          items,
+          total: cartTotal.value,
+          clientId: selectedClientId.value,
+          clientName: selectedClientName.value,
+          overallRemarks: overallRemarks.value,
+          isPersonnel: isPersonnel.value,
+        },
+      }
+    )
 
-    // Create order items
-    for (const item of cartItems.value) {
-      const unitPrice = Number(item.product.price)
-      const totalPrice = unitPrice * item.quantity
-      await createOrderItem({
-        orderId: order.id,
-        productId: item.product.id,
-        quantity: String(item.quantity), // Schema expects text
-        unitPrice,
-        totalPrice,
-      })
+    // Trigger print queue generation
+    try {
+      await $fetch(
+        `/api/pos/events/${selectedEventId.value}/orders/${response.order.id}/print`,
+        { method: 'POST' }
+      )
+    } catch (printError) {
+      // Log but don't fail checkout if printing fails
+      console.error('Failed to trigger print queue:', printError)
     }
 
     // Clear cart after successful checkout
     clearCart()
     selectedClientId.value = null
+    selectedClientName.value = null
 
-    return order
+    return response
   }
 
   return {
     cartItems,
     selectedEventId,
     selectedClientId,
+    selectedClientName,
+    overallRemarks,
+    isPersonnel,
     cartTotal,
     cartItemCount,
     addToCart,

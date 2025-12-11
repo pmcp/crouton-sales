@@ -7,12 +7,13 @@
 
     <div v-else class="space-y-2">
       <div
-        v-for="item in items"
-        :key="item.product.id"
+        v-for="(item, index) in items"
+        :key="`${item.product.id}-${index}`"
         class="flex items-center justify-between gap-2 py-2"
       >
         <div class="flex-1 min-w-0">
           <p class="font-medium truncate">{{ item.product.title }}</p>
+          <p v-if="item.remarks" class="text-xs text-info truncate">{{ item.remarks }}</p>
           <p class="text-sm text-muted">${{ Number(item.product.price).toFixed(2) }} each</p>
         </div>
 
@@ -23,7 +24,7 @@
             color="neutral"
             variant="soft"
             square
-            @click="$emit('updateQuantity', item.product.id, item.quantity - 1)"
+            @click="$emit('updateQuantity', index, item.quantity - 1)"
           />
           <span class="w-8 text-center font-medium">{{ item.quantity }}</span>
           <UButton
@@ -32,7 +33,7 @@
             color="neutral"
             variant="soft"
             square
-            @click="$emit('updateQuantity', item.product.id, item.quantity + 1)"
+            @click="$emit('updateQuantity', index, item.quantity + 1)"
           />
           <UButton
             icon="i-lucide-x"
@@ -40,7 +41,7 @@
             color="error"
             variant="ghost"
             square
-            @click="$emit('remove', item.product.id)"
+            @click="$emit('remove', index)"
           />
         </div>
       </div>
@@ -85,6 +86,8 @@ interface CartItem {
     price: number
   }
   quantity: number
+  remarks?: string
+  selectedOptions?: Record<string, any>
 }
 
 defineProps<{
@@ -96,8 +99,8 @@ defineProps<{
 }>()
 
 defineEmits<{
-  updateQuantity: [productId: string, quantity: number]
-  remove: [productId: string]
+  updateQuantity: [index: number, quantity: number]
+  remove: [index: number]
   checkout: []
   clear: []
 }>()
