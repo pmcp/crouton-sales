@@ -26,6 +26,7 @@ export default defineNuxtConfig({
     openaiApiKey: process.env.OPENAI_API_KEY,
     fromEmail: process.env.FROM_EMAIL,
     emailProvider: process.env.EMAIL_PROVIDER,
+    printServerApiKey: process.env.PRINT_SERVER_API_KEY,
     // @ts-expect-error - We're just extending the type
     session: {
       maxAge: 60 * 60 * 24 * 7, // Session expires after 7 days - change it accordingly
