@@ -9,7 +9,6 @@ export default {
   collections: [
     { name: 'events', fieldsFile: './schemas/events-schema.json' },
     { name: 'products', fieldsFile: './schemas/products-schema.json' },
-    { name: 'productOptions', fieldsFile: './schemas/productOptions-schema.json' },
     { name: 'categories', fieldsFile: './schemas/categories-schema.json' },
     { name: 'locations', fieldsFile: './schemas/locations-schema.json' },
     { name: 'printers', fieldsFile: './schemas/printers-schema.json' },
@@ -27,7 +26,6 @@ export default {
       collections: [
         'events',
         'products',
-        'productOptions',
         'categories',
         'locations',
         'printers',

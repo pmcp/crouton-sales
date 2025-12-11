@@ -1,6 +1,5 @@
 import { posEventsConfig } from '../layers/pos/collections/events/app/composables/usePosEvents'
 import { posProductsConfig } from '../layers/pos/collections/products/app/composables/usePosProducts'
-import { posProductOptionsConfig } from '../layers/pos/collections/productoptions/app/composables/usePosProductOptions'
 import { posCategoriesConfig } from '../layers/pos/collections/categories/app/composables/usePosCategories'
 import { posLocationsConfig } from '../layers/pos/collections/locations/app/composables/usePosLocations'
 import { posPrintersConfig } from '../layers/pos/collections/printers/app/composables/usePosPrinters'
@@ -22,7 +21,6 @@ export default defineAppConfig({
     posPrinters: posPrintersConfig,
     posLocations: posLocationsConfig,
     posCategories: posCategoriesConfig,
-    posProductOptions: posProductOptionsConfig,
     posProducts: posProductsConfig,
     posEvents: posEventsConfig,
   },

@@ -25,6 +25,7 @@ export default defineEventHandler(async (event) => {
     remarkPrompt: body.remarkPrompt,
     hasOptions: body.hasOptions,
     multipleOptionsAllowed: body.multipleOptionsAllowed,
+    options: body.options,
     sortOrder: body.sortOrder
   })
 })

@@ -27,7 +27,6 @@ export const posPrinters = sqliteTable('pos_printers', {
   title: text('title').notNull(),
   ipAddress: text('ipAddress').notNull(),
   port: text('port'),
-  type: text('type').$default(() => 'kitchen'), // 'kitchen' or 'receipt'
   status: text('status'),
   showPrices: integer('showPrices', { mode: 'boolean' }).$default(() => false),
   isActive: integer('isActive', { mode: 'boolean' }).$default(() => false),

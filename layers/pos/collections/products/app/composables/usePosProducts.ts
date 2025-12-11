@@ -12,6 +12,7 @@ export const posProductSchema = z.object({
   remarkPrompt: z.string().optional(),
   hasOptions: z.boolean().optional(),
   multipleOptionsAllowed: z.boolean().optional(),
+  options: z.record(z.any()).optional(),
   sortOrder: z.string().optional()
 })
 
@@ -28,6 +29,7 @@ export const posProductsColumns = [
   { accessorKey: 'remarkPrompt', header: 'RemarkPrompt' },
   { accessorKey: 'hasOptions', header: 'HasOptions' },
   { accessorKey: 'multipleOptionsAllowed', header: 'MultipleOptionsAllowed' },
+  { accessorKey: 'options', header: 'Options' },
   { accessorKey: 'sortOrder', header: 'SortOrder' }
 ]
 
@@ -49,6 +51,7 @@ export const posProductsConfig = {
     remarkPrompt: '',
     hasOptions: false,
     multipleOptionsAllowed: false,
+    options: {},
     sortOrder: ''
   },
   columns: posProductsColumns,

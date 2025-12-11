@@ -33,6 +33,7 @@ export const posProducts = sqliteTable('pos_products', {
   remarkPrompt: text('remarkPrompt'),
   hasOptions: integer('hasOptions', { mode: 'boolean' }).$default(() => false),
   multipleOptionsAllowed: integer('multipleOptionsAllowed', { mode: 'boolean' }).$default(() => false),
+  options: jsonColumn('options').$default(() => ({})),
   sortOrder: text('sortOrder'),
 
   createdAt: integer('createdAt', { mode: 'timestamp' }).notNull().$default(() => new Date()),

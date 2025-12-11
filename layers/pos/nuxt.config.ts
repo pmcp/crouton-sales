@@ -15,7 +15,6 @@ export default defineNuxtConfig({
   extends: [
     './collections/events',
     './collections/products',
-    './collections/productoptions',
     './collections/categories',
     './collections/locations',
     './collections/printers',

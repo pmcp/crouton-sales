@@ -1,7 +1,0 @@
-{
-  "id": { "type": "uuid", "meta": { "primaryKey": true } },
-  "productId": { "type": "uuid", "refTarget": "products", "meta": { "required": true, "label": "Product" } },
-  "optionName": { "type": "string", "meta": { "required": true, "label": "Option Name", "maxLength": 100 } },
-  "additionalPrice": { "type": "decimal", "meta": { "label": "Additional Price", "precision": 10, "scale": 2, "default": 0 } },
-  "displayOrder": { "type": "integer", "meta": { "label": "Display Order", "default": 0 } }
-}

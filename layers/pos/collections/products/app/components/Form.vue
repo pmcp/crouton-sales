@@ -59,9 +59,21 @@
         <UFormField label="HasOptions" name="hasOptions" class="not-last:pb-4">
           <UCheckbox v-model="state.hasOptions" />
         </UFormField>
-        <UFormField label="MultipleOptionsAllowed" name="multipleOptionsAllowed" class="not-last:pb-4">
-          <UCheckbox v-model="state.multipleOptionsAllowed" />
-        </UFormField>
+        <template v-if="state.hasOptions">
+          <UFormField label="MultipleOptionsAllowed" name="multipleOptionsAllowed" class="not-last:pb-4">
+            <UCheckbox v-model="state.multipleOptionsAllowed" />
+          </UFormField>
+          <UFormField label="Options" name="options" class="not-last:pb-4">
+            <div class="space-y-2">
+              <div v-for="(option, index) in productOptions" :key="option.id" class="flex gap-2 items-center">
+                <UInput v-model="option.label" placeholder="Option name" class="flex-1" />
+                <UInputNumber v-model="option.priceModifier" :step="0.01" placeholder="+€" class="w-28" />
+                <UButton icon="i-lucide-trash" color="error" variant="ghost" @click="removeOption(index)" />
+              </div>
+              <UButton icon="i-lucide-plus" label="Add Option" variant="soft" size="sm" @click="addOption" />
+            </div>
+          </UFormField>
+        </template>
         <UFormField label="SortOrder" name="sortOrder" class="not-last:pb-4">
           <UInput v-model="state.sortOrder" class="w-full" size="xl" />
         </UFormField>
@@ -81,8 +93,15 @@
 </template>
 
 <script setup lang="ts">
+import { nanoid } from 'nanoid'
 import type { PosProductFormProps, PosProductFormData } from '../../types'
 import usePosProducts from '../composables/usePosProducts'
+
+interface ProductOption {
+  id: string
+  label: string
+  priceModifier: number
+}
 
 const props = defineProps<PosProductFormProps>()
 const { defaultValue, schema, collection } = usePosProducts()
@@ -104,6 +123,29 @@ const initialValues = props.action === 'update' && props.activeItem?.id
   : { ...defaultValue }
 
 const state = ref<PosProductFormData & { id?: string | null }>(initialValues)
+
+// Product options management
+const productOptions = computed({
+  get: () => (state.value.options as ProductOption[]) || [],
+  set: (value: ProductOption[]) => { state.value.options = value }
+})
+
+function addOption() {
+  if (!state.value.options || !Array.isArray(state.value.options)) {
+    state.value.options = []
+  }
+  (state.value.options as ProductOption[]).push({
+    id: nanoid(),
+    label: '',
+    priceModifier: 0
+  })
+}
+
+function removeOption(index: number) {
+  if (Array.isArray(state.value.options)) {
+    state.value.options.splice(index, 1)
+  }
+}
 
 const handleSubmit = async () => {
   try {

@@ -16,6 +16,7 @@ export interface PosProduct {
   remarkPrompt?: string
   hasOptions?: boolean
   multipleOptionsAllowed?: boolean
+  options?: Record<string, any>
   sortOrder?: string
   createdAt: Date
   updatedAt: Date
