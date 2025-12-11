@@ -11,7 +11,7 @@
         <UIcon name="i-lucide-lock" class="text-4xl text-muted" />
         <p class="text-muted">Please login to access the order interface</p>
         <UButton
-          :to="`/pos/${teamSlug}/${eventSlug}/helper`"
+          :to="`/order/${teamSlug}/${eventSlug}/login`"
           icon="i-lucide-log-in"
         >
           Login
@@ -163,6 +163,11 @@
 import type { PosProduct } from '~~/layers/pos/collections/products/types'
 import type { PosCategory } from '~~/layers/pos/collections/categories/types'
 
+definePageMeta({
+  layout: false,
+  middleware: ['order-auth'],
+})
+
 interface Client {
   id: string
   title: string
@@ -187,7 +192,7 @@ const toast = useToast()
 const isOnline = useOnline()
 
 const teamSlug = computed(() => route.params.team as string)
-const eventSlug = computed(() => route.params.eventSlug as string)
+const eventSlug = computed(() => route.params.event as string)
 
 const { isHelper, loadSession, logout, token, eventId: sessionEventId, teamId: sessionTeamId } = useHelperAuth()
 
@@ -385,7 +390,7 @@ async function handleCheckout() {
 
 async function handleLogout() {
   await logout()
-  await navigateTo(`/pos/${teamSlug.value}/${eventSlug.value}/helper`)
+  await navigateTo(`/order/${teamSlug.value}/${eventSlug.value}/login`)
 }
 
 onMounted(() => {

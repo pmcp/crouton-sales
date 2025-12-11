@@ -68,6 +68,10 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+  layout: false,
+})
+
 interface PosEvent {
   id: string
   teamId: string
@@ -78,7 +82,7 @@ interface PosEvent {
 
 const route = useRoute()
 const teamSlug = computed(() => route.params.team as string)
-const eventSlug = computed(() => route.params.eventSlug as string)
+const eventSlug = computed(() => route.params.event as string)
 
 const loading = ref(true)
 const submitting = ref(false)
@@ -146,7 +150,7 @@ async function onSubmit() {
     }
 
     // Redirect to the order interface
-    await navigateTo(`/pos/${teamSlug.value}/${eventSlug.value}/orders`)
+    await navigateTo(`/order/${teamSlug.value}/${eventSlug.value}`)
   }
   catch (err: any) {
     errorMessage.value = err.data?.message || err.statusMessage || 'Login failed. Please check your PIN.'

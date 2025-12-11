@@ -15,43 +15,39 @@ const { currentTeam } = useTeam()
 const navigationItems = computed<NavigationMenuItem[][]>(() => [
   [
     {
-      label: 'POS',
-      type: 'label',
-    },
-    {
       label: 'Events',
       icon: 'i-lucide-calendar',
-      to: `/dashboard/${currentTeam.value.slug}/pos`,
+      to: `/dashboard/${currentTeam.value.slug}/events`,
     },
     {
       label: 'Products',
       icon: 'i-lucide-package',
-      to: `/dashboard/${currentTeam.value.slug}/pos/products`,
+      to: `/dashboard/${currentTeam.value.slug}/products`,
     },
     {
       label: 'Categories',
       icon: 'i-lucide-folder',
-      to: `/dashboard/${currentTeam.value.slug}/pos/categories`,
+      to: `/dashboard/${currentTeam.value.slug}/categories`,
     },
     {
       label: 'Locations',
       icon: 'i-lucide-map-pin',
-      to: `/dashboard/${currentTeam.value.slug}/pos/locations`,
+      to: `/dashboard/${currentTeam.value.slug}/locations`,
     },
     {
       label: 'Printers',
       icon: 'i-lucide-printer',
-      to: `/dashboard/${currentTeam.value.slug}/pos/printers`,
+      to: `/dashboard/${currentTeam.value.slug}/printers`,
     },
     {
       label: 'Helpers',
       icon: 'i-lucide-users',
-      to: `/dashboard/${currentTeam.value.slug}/pos/helpers`,
+      to: `/dashboard/${currentTeam.value.slug}/helpers`,
     },
     {
       label: 'Clients',
       icon: 'i-lucide-user',
-      to: `/dashboard/${currentTeam.value.slug}/pos/clients`,
+      to: `/dashboard/${currentTeam.value.slug}/clients`,
     },
   ],
 ])

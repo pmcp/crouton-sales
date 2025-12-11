@@ -67,42 +67,42 @@
           <UButton
             variant="outline"
             icon="i-lucide-shopping-cart"
-            :to="`/dashboard/${route.params.team}/pos/${eventSlug}/orders`"
+            :to="`/dashboard/${route.params.team}/events/${eventSlug}/orders`"
           >
             Orders
           </UButton>
           <UButton
             variant="outline"
             icon="i-lucide-package"
-            :to="`/dashboard/${route.params.team}/pos/products`"
+            :to="`/dashboard/${route.params.team}/products`"
           >
             Products
           </UButton>
           <UButton
             variant="outline"
             icon="i-lucide-folder"
-            :to="`/dashboard/${route.params.team}/pos/categories`"
+            :to="`/dashboard/${route.params.team}/categories`"
           >
             Categories
           </UButton>
           <UButton
             variant="outline"
             icon="i-lucide-map-pin"
-            :to="`/dashboard/${route.params.team}/pos/locations`"
+            :to="`/dashboard/${route.params.team}/locations`"
           >
             Locations
           </UButton>
           <UButton
             variant="outline"
             icon="i-lucide-printer"
-            :to="`/dashboard/${route.params.team}/pos/printers`"
+            :to="`/dashboard/${route.params.team}/printers`"
           >
             Printers
           </UButton>
           <UButton
             variant="outline"
             icon="i-lucide-users"
-            :to="`/dashboard/${route.params.team}/pos/helpers`"
+            :to="`/dashboard/${route.params.team}/helpers`"
           >
             Helpers
           </UButton>
@@ -119,7 +119,7 @@ import type { PosEventSetting } from '~~/layers/pos/collections/eventsettings/ty
 definePageMeta({ middleware: ['auth'] })
 
 const route = useRoute()
-const eventSlug = computed(() => route.params.eventSlug as string)
+const eventSlug = computed(() => route.params.slug as string)
 
 // Fetch events and find the one matching the slug
 const { items: events } = await useCollectionQuery('posEvents')

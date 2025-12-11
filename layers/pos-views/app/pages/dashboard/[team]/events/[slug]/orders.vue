@@ -14,7 +14,7 @@ import type { PosEvent } from '~~/layers/pos/collections/events/types'
 definePageMeta({ middleware: ['auth'] })
 
 const route = useRoute()
-const eventSlug = computed(() => route.params.eventSlug as string)
+const eventSlug = computed(() => route.params.slug as string)
 
 // Fetch events and find the one matching the slug
 const { items: events } = await useCollectionQuery('posEvents')
