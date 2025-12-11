@@ -20,3 +20,4 @@ export { posHelpers } from '../../../layers/pos/collections/helpers/server/datab
 export { posClients } from '../../../layers/pos/collections/clients/server/database/schema'
 export { posEventsettings } from '../../../layers/pos/collections/eventsettings/server/database/schema'
 export { croutonCollectionEvents } from '../../../layers/crouton-events/server/database/schema'
+export { posPrintqueues } from '../../../layers/pos/collections/printqueues/server/database/schema'

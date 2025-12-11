@@ -9,9 +9,11 @@ import { posOrderItemsConfig } from '../layers/pos/collections/orderitems/app/co
 import { posHelpersConfig } from '../layers/pos/collections/helpers/app/composables/usePosHelpers'
 import { posClientsConfig } from '../layers/pos/collections/clients/app/composables/usePosClients'
 import { posEventSettingsConfig } from '../layers/pos/collections/eventsettings/app/composables/usePosEventSettings'
+import { posPrintqueuesConfig } from '../layers/pos/collections/printqueues/app/composables/usePosPrintqueues'
 
 export default defineAppConfig({
   croutonCollections: {
+    posPrintqueues: posPrintqueuesConfig,
     posEventSettings: posEventSettingsConfig,
     posClients: posClientsConfig,
     posHelpers: posHelpersConfig,

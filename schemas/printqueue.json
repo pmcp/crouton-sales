@@ -1,0 +1,15 @@
+{
+  "id": { "type": "uuid", "meta": { "primaryKey": true } },
+  "teamId": { "type": "string", "meta": { "required": true, "teamScoped": true } },
+  "owner": { "type": "string", "meta": { "required": true, "ownerField": true } },
+  "eventId": { "type": "string", "meta": { "required": true } },
+  "orderId": { "type": "string", "meta": { "required": true } },
+  "printerId": { "type": "string", "meta": { "required": true } },
+  "locationId": { "type": "string" },
+  "status": { "type": "integer", "meta": { "required": true, "default": 0 } },
+  "printData": { "type": "text", "meta": { "required": true } },
+  "printMode": { "type": "string", "meta": { "default": "normal" } },
+  "errorMessage": { "type": "text" },
+  "retryCount": { "type": "integer", "meta": { "default": 0 } },
+  "completedAt": { "type": "datetime" }
+}

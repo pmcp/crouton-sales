@@ -23,6 +23,7 @@ export default defineNuxtConfig({
     './collections/orderitems',
     './collections/helpers',
     './collections/clients',
-    './collections/eventsettings'
+    './collections/eventsettings',
+    './collections/printqueues'
   ]
 })
