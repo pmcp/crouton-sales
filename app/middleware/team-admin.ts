@@ -5,7 +5,7 @@ export default defineNuxtRouteMiddleware(async (to, _from) => {
   const { loggedIn } = useUserSession()
   const teams = useState<Team[]>('teams', () => [])
   const teamSlug = useState<string>('teamSlug')
-  const { isTeamOwner } = useTeam()
+  const { isAdmin } = useTeam()
 
   // Is user logged in?
   if (!loggedIn.value) {
@@ -27,7 +27,7 @@ export default defineNuxtRouteMiddleware(async (to, _from) => {
     return navigateTo('/dashboard')
   }
 
-  if (!isTeamOwner.value) {
+  if (!isAdmin.value) {
     toast.add({
       title: 'Unauthorized Access',
       color: 'error',

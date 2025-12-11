@@ -6,6 +6,6 @@
 
 <script setup lang="ts">
 definePageMeta({
-  middleware: ['team-owner'],
+  middleware: ['team-admin'],
 })
 </script>

@@ -10,11 +10,14 @@
         leave-from-class="translate-x-0"
         leave-to-class="-translate-x-1/2"
       >
-        <div v-if="isTeamRoute" key="team">
-          <AppSidebarTeam />
-        </div>
-        <div v-else-if="isSuperAdminRoute" key="super-admin">
+        <div v-if="isSuperAdminRoute" key="super-admin">
           <AppSidebarSuperAdmin />
+        </div>
+        <div v-else-if="isTeamRoute && isAdmin" key="team-admin">
+          <AppSidebarTeamAdmin />
+        </div>
+        <div v-else-if="isTeamRoute" key="team-member">
+          <AppSidebarTeamMember />
         </div>
         <div v-else key="account">
           <AppSidebarAccount />
@@ -28,7 +31,10 @@
 </template>
 
 <script lang="ts" setup>
+import { useTeam } from '@/composables/useTeam'
+
 const route = useRoute()
+const { isAdmin } = useTeam()
 
 const mobileMenu = useState('mobileMenu', () => false)
 const isTeamRoute = computed(() => {

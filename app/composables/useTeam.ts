@@ -46,6 +46,14 @@ export const useTeam = () => {
     { immediate: true },
   )
 
+  const memberRole = computed(() => {
+    return (currentTeam.value as { role?: string })?.role as 'owner' | 'admin' | 'member' | null
+  })
+
+  const isAdmin = computed(() => {
+    return ['owner', 'admin'].includes(memberRole.value || '')
+  })
+
   const getMemberships = async () => {
     loading.value = true
     try {
@@ -190,6 +198,8 @@ export const useTeam = () => {
     cancelInvite,
     resendInvite,
     isTeamOwner,
+    memberRole,
+    isAdmin,
     teamSchema,
     currentTeam,
     teams,
