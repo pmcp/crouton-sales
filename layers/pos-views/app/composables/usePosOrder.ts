@@ -1,10 +1,22 @@
 import type { PosProduct } from '~~/layers/pos/collections/products/types'
 
+// Inline product option structure (stored in product.options JSON field)
+interface ProductOption {
+  id: string
+  label: string
+  priceModifier: number
+}
+
+// PosProduct with typed options array
+interface ProductWithOptions extends PosProduct {
+  options?: ProductOption[]
+}
+
 export interface CartItem {
-  product: PosProduct
+  product: ProductWithOptions
   quantity: number
   remarks?: string
-  selectedOptions?: Record<string, any>
+  selectedOptions?: string | string[]
 }
 
 interface OrderItem {
@@ -13,7 +25,7 @@ interface OrderItem {
   price: number
   productName?: string
   remarks?: string
-  selectedOptions?: Record<string, any>
+  selectedOptions?: string | string[]
 }
 
 interface CreateOrderResponse {
@@ -26,6 +38,23 @@ interface CreateOrderResponse {
   eventOrderNumber: string
 }
 
+// Calculate item price including option modifiers
+function calculateItemPrice(item: CartItem): number {
+  let price = Number(item.product.price)
+  if (item.selectedOptions && item.product.options) {
+    const optionIds = Array.isArray(item.selectedOptions)
+      ? item.selectedOptions
+      : [item.selectedOptions]
+    for (const id of optionIds) {
+      const option = item.product.options.find(o => o.id === id)
+      if (option?.priceModifier) {
+        price += option.priceModifier
+      }
+    }
+  }
+  return price
+}
+
 export function usePosOrder() {
   const cartItems = ref<CartItem[]>([])
   const selectedEventId = ref<string | null>(null)
@@ -35,14 +64,14 @@ export function usePosOrder() {
   const isPersonnel = ref(false)
 
   const cartTotal = computed(() =>
-    cartItems.value.reduce((sum, item) => sum + (Number(item.product.price) * item.quantity), 0),
+    cartItems.value.reduce((sum, item) => sum + (calculateItemPrice(item) * item.quantity), 0),
   )
 
   const cartItemCount = computed(() =>
     cartItems.value.reduce((sum, item) => sum + item.quantity, 0),
   )
 
-  function addToCart(product: PosProduct, remarks?: string, selectedOptions?: Record<string, any>) {
+  function addToCart(product: ProductWithOptions, remarks?: string, selectedOptions?: string | string[]) {
     // If product has remarks or options, always add as new item
     if (remarks || selectedOptions) {
       cartItems.value.push({ product, quantity: 1, remarks, selectedOptions })
@@ -71,7 +100,10 @@ export function usePosOrder() {
       if (quantity <= 0) {
         removeFromCart(index)
       } else {
-        cartItems.value[index].quantity = quantity
+        const item = cartItems.value[index]
+        if (item) {
+          item.quantity = quantity
+        }
       }
     }
   }
@@ -91,11 +123,11 @@ export function usePosOrder() {
       throw new Error('Cart is empty')
     }
 
-    // Build order items
+    // Build order items with adjusted prices for options
     const items: OrderItem[] = cartItems.value.map(item => ({
       productId: item.product.id,
       quantity: item.quantity,
-      price: Number(item.product.price),
+      price: calculateItemPrice(item),
       productName: item.product.title,
       remarks: item.remarks,
       selectedOptions: item.selectedOptions,

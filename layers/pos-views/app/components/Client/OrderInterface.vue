@@ -22,7 +22,7 @@
         <div class="flex-1 overflow-y-auto p-2">
           <ClientProductList
             :products="filteredProducts"
-            @select="addToCart"
+            @select="handleProductSelect"
           />
         </div>
 
@@ -39,6 +39,26 @@
           />
         </div>
       </div>
+
+      <!-- Product Options Modal -->
+      <UModal v-model:open="showOptionsModal" :title="pendingProduct?.title" :ui="{ footer: 'justify-end' }">
+        <template #body>
+          <ClientProductOptionsSelect
+            v-model="selectedOptions"
+            :options="productOptionsForPending"
+            :multiple-allowed="pendingProduct?.multipleOptionsAllowed"
+          />
+        </template>
+
+        <template #footer>
+          <UButton label="Cancel" color="neutral" variant="ghost" @click="showOptionsModal = false" />
+          <UButton
+            label="Add to Cart"
+            :disabled="!selectedOptions || (Array.isArray(selectedOptions) && selectedOptions.length === 0)"
+            @click="confirmProductWithOptions"
+          />
+        </template>
+      </UModal>
 
       <!-- Mobile cart button -->
       <div class="md:hidden border-t p-2">
@@ -74,6 +94,7 @@
 <script setup lang="ts">
 import type { PosProduct } from '~~/layers/pos/collections/products/types'
 import type { PosCategory } from '~~/layers/pos/collections/categories/types'
+import type { ProductOption } from './ProductOptionsSelect.vue'
 
 const props = defineProps<{
   eventId: string
@@ -106,6 +127,43 @@ const { items: products, pending: productsLoading } = await useCollectionQuery('
 })
 
 const loading = computed(() => categoriesLoading.value || productsLoading.value)
+
+// Product options modal state
+const showOptionsModal = ref(false)
+const pendingProduct = ref<PosProduct | null>(null)
+const selectedOptions = ref<string | string[] | null>(null)
+
+// Get inline options from the pending product
+const productOptionsForPending = computed<ProductOption[]>(() => {
+  if (!pendingProduct.value?.options) return []
+  const options = pendingProduct.value.options as ProductOption[]
+  return Array.isArray(options) ? options : []
+})
+
+// Handle product selection - show modal if product has options
+function handleProductSelect(product: PosProduct) {
+  const options = (product.options as ProductOption[]) || []
+
+  if (product.hasOptions && Array.isArray(options) && options.length > 0) {
+    pendingProduct.value = product
+    selectedOptions.value = product.multipleOptionsAllowed ? [] : null
+    showOptionsModal.value = true
+  } else {
+    addToCart(product)
+  }
+}
+
+// Confirm product with selected options
+function confirmProductWithOptions() {
+  if (!pendingProduct.value || !selectedOptions.value) return
+
+  addToCart(pendingProduct.value, undefined, selectedOptions.value)
+
+  // Reset modal state
+  showOptionsModal.value = false
+  pendingProduct.value = null
+  selectedOptions.value = null
+}
 
 // Category selection
 const selectedCategory = ref<string | null>(null)

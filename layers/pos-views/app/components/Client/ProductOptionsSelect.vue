@@ -13,9 +13,9 @@
       @click="toggleOption(option.id)"
     >
       <div class="flex items-center justify-between">
-        <span>{{ option.optionName }}</span>
-        <span v-if="option.additionalPrice && option.additionalPrice > 0" class="text-sm text-muted">
-          +${{ option.additionalPrice.toFixed(2) }}
+        <span>{{ option.label }}</span>
+        <span v-if="option.priceModifier && option.priceModifier > 0" class="text-sm text-muted">
+          +${{ option.priceModifier.toFixed(2) }}
         </span>
       </div>
     </UCard>
@@ -23,11 +23,16 @@
 </template>
 
 <script setup lang="ts">
-import type { PosProductOption } from '~~/layers/pos/collections/productoptions/types'
+// Inline product option structure (stored in product.options JSON field)
+export interface ProductOption {
+  id: string
+  label: string
+  priceModifier: number
+}
 
 interface Props {
   modelValue: string | string[] | null
-  options: PosProductOption[]
+  options: ProductOption[]
   multipleAllowed?: boolean
 }
 

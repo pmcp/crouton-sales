@@ -13,8 +13,9 @@
       >
         <div class="flex-1 min-w-0">
           <p class="font-medium truncate">{{ item.product.title }}</p>
-          <p v-if="item.remarks" class="text-xs text-info truncate">{{ item.remarks }}</p>
-          <p class="text-sm text-muted">${{ Number(item.product.price).toFixed(2) }} each</p>
+          <p v-if="formatSelectedOptions(item)" class="text-xs text-info truncate">{{ formatSelectedOptions(item) }}</p>
+          <p v-if="item.remarks" class="text-xs text-muted truncate">{{ item.remarks }}</p>
+          <p class="text-sm text-muted">${{ calculateItemPrice(item).toFixed(2) }} each</p>
         </div>
 
         <div class="flex items-center gap-2">
@@ -79,15 +80,23 @@
 </template>
 
 <script setup lang="ts">
+// Inline product option structure (stored in product.options JSON field)
+interface ProductOption {
+  id: string
+  label: string
+  priceModifier: number
+}
+
 interface CartItem {
   product: {
     id: string
     title: string
     price: number
+    options?: ProductOption[]
   }
   quantity: number
   remarks?: string
-  selectedOptions?: Record<string, any>
+  selectedOptions?: string | string[]
 }
 
 defineProps<{
@@ -104,4 +113,33 @@ defineEmits<{
   checkout: []
   clear: []
 }>()
+
+// Format selected options for display
+function formatSelectedOptions(item: CartItem): string {
+  if (!item.selectedOptions || !item.product.options) return ''
+  const optionIds = Array.isArray(item.selectedOptions)
+    ? item.selectedOptions
+    : [item.selectedOptions]
+  return optionIds
+    .map(id => item.product.options?.find(o => o.id === id)?.label)
+    .filter(Boolean)
+    .join(', ')
+}
+
+// Calculate item price including option modifiers
+function calculateItemPrice(item: CartItem): number {
+  let price = Number(item.product.price)
+  if (item.selectedOptions && item.product.options) {
+    const optionIds = Array.isArray(item.selectedOptions)
+      ? item.selectedOptions
+      : [item.selectedOptions]
+    for (const id of optionIds) {
+      const option = item.product.options.find(o => o.id === id)
+      if (option?.priceModifier) {
+        price += option.priceModifier
+      }
+    }
+  }
+  return price
+}
 </script>
