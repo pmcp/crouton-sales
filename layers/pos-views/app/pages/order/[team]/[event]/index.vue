@@ -268,21 +268,24 @@ const filteredProducts = computed(() => {
 
 // Cart functions
 function addToCart(product: PosProduct, selectedOption?: string) {
-  if (selectedOption) {
-    // Products with options always add as new line items
-    cartItems.value.push({ product, quantity: 1, selectedOptions: selectedOption })
-    return
-  }
+  // Find existing item with same product and same option
+  const existingItem = cartItems.value.find((item) => {
+    if (item.product.id !== product.id) return false
+    // Both have no options
+    if (!item.selectedOptions && !selectedOption) return true
+    // Both have the same option
+    return item.selectedOptions === selectedOption
+  })
 
-  // Merge logic for products without options
-  const existingItem = cartItems.value.find(item =>
-    item.product.id === product.id && !item.selectedOptions,
-  )
   if (existingItem) {
     existingItem.quantity++
   }
   else {
-    cartItems.value.push({ product, quantity: 1 })
+    cartItems.value.push({
+      product,
+      quantity: 1,
+      ...(selectedOption && { selectedOptions: selectedOption }),
+    })
   }
 }
 
