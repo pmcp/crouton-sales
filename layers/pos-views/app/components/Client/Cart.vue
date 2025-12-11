@@ -87,20 +87,15 @@ interface ProductOption {
   priceModifier: number
 }
 
-interface CartItem {
-  product: {
-    id: string
-    title: string
-    price: number
-    options?: ProductOption[]
-  }
+interface CartItem<T extends { id: string, title: string, price: number, options?: ProductOption[] } = { id: string, title: string, price: number, options?: ProductOption[] }> {
+  product: T
   quantity: number
   remarks?: string
   selectedOptions?: string | string[]
 }
 
 defineProps<{
-  items: CartItem[]
+  items: CartItem<any>[]
   total: number
   disabled: boolean
   clientRequired?: boolean

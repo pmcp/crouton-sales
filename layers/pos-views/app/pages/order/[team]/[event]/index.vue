@@ -161,7 +161,7 @@
 
 <script setup lang="ts">
 import type { PosProduct } from '~~/layers/pos/collections/products/types'
-import type { PosCategory } from '~~/layers/pos/collections/categories/types'
+import type { PosCategorie } from '~~/layers/pos/collections/categories/types'
 
 definePageMeta({
   layout: false,
@@ -176,15 +176,22 @@ interface Client {
 interface OrderData {
   event: { id: string; title: string; slug: string; teamId: string }
   products: PosProduct[]
-  categories: PosCategory[]
+  categories: PosCategorie[]
   clients: Client[]
   settings: { useReusableClients: boolean }
   helper: { id: string; name: string }
 }
 
+interface ProductOption {
+  id: string
+  label: string
+  priceModifier: number
+}
+
 interface CartItem {
   product: PosProduct
   quantity: number
+  selectedOptions?: string | string[]
 }
 
 const route = useRoute()
@@ -221,9 +228,25 @@ const hasClient = computed(() => {
 
 const cartTotal = computed(() => {
   return cartItems.value.reduce((total, item) => {
-    return total + (item.product.price || 0) * item.quantity
+    return total + calculateItemPrice(item) * item.quantity
   }, 0)
 })
+
+function calculateItemPrice(item: CartItem): number {
+  let price = Number(item.product.price) || 0
+  if (item.selectedOptions && item.product.options) {
+    const optionIds = Array.isArray(item.selectedOptions)
+      ? item.selectedOptions
+      : [item.selectedOptions]
+    for (const id of optionIds) {
+      const option = (item.product.options as ProductOption[]).find(o => o.id === id)
+      if (option?.priceModifier) {
+        price += option.priceModifier
+      }
+    }
+  }
+  return price
+}
 
 const productCounts = computed(() => {
   const counts: Record<string, number> = {}
@@ -244,8 +267,17 @@ const filteredProducts = computed(() => {
 })
 
 // Cart functions
-function addToCart(product: PosProduct) {
-  const existingItem = cartItems.value.find(item => item.product.id === product.id)
+function addToCart(product: PosProduct, selectedOption?: string) {
+  if (selectedOption) {
+    // Products with options always add as new line items
+    cartItems.value.push({ product, quantity: 1, selectedOptions: selectedOption })
+    return
+  }
+
+  // Merge logic for products without options
+  const existingItem = cartItems.value.find(item =>
+    item.product.id === product.id && !item.selectedOptions,
+  )
   if (existingItem) {
     existingItem.quantity++
   }
@@ -254,21 +286,22 @@ function addToCart(product: PosProduct) {
   }
 }
 
-function removeFromCart(productId: string) {
-  const index = cartItems.value.findIndex(item => item.product.id === productId)
-  if (index !== -1) {
+function removeFromCart(index: number) {
+  if (index >= 0 && index < cartItems.value.length) {
     cartItems.value.splice(index, 1)
   }
 }
 
-function updateQuantity(productId: string, quantity: number) {
-  const item = cartItems.value.find(item => item.product.id === productId)
-  if (item) {
+function updateQuantity(index: number, quantity: number) {
+  if (index >= 0 && index < cartItems.value.length) {
     if (quantity <= 0) {
-      removeFromCart(productId)
+      removeFromCart(index)
     }
     else {
-      item.quantity = quantity
+      const item = cartItems.value[index]
+      if (item) {
+        item.quantity = quantity
+      }
     }
   }
 }
@@ -363,8 +396,9 @@ async function handleCheckout() {
         items: cartItems.value.map(item => ({
           productId: item.product.id,
           quantity: item.quantity,
-          price: item.product.price,
+          price: calculateItemPrice(item),
           productName: item.product.title,
+          selectedOptions: item.selectedOptions,
         })),
         total: cartTotal.value,
         clientId: selectedClientId.value || undefined,
