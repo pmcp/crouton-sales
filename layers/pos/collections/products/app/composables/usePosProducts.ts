@@ -12,7 +12,11 @@ export const posProductSchema = z.object({
   remarkPrompt: z.string().optional(),
   hasOptions: z.boolean().optional(),
   multipleOptionsAllowed: z.boolean().optional(),
-  options: z.record(z.any()).optional(),
+  options: z.array(z.object({
+    id: z.string(),
+    label: z.string(),
+    priceModifier: z.number()
+  })).optional(),
   sortOrder: z.string().optional()
 })
 

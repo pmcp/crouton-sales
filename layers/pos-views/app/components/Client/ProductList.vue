@@ -3,8 +3,7 @@
     No products found
   </div>
   <div v-else ref="containerRef" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
-    <div v-for="product in products" :key="product.id" class="relative">
-      <!-- Product button -->
+    <div v-for="product in products" :key="product.id">
       <UButton
         color="neutral"
         variant="soft"
@@ -18,31 +17,10 @@
         <UIcon v-if="hasOptions(product)" name="i-lucide-list" class="absolute top-2 right-2 text-muted text-xs" />
       </UButton>
 
-      <!-- Desktop: Overlay options (two-tap flow) -->
+      <!-- Options (inline expansion) -->
       <div
         v-if="activeProductId === product.id && hasOptions(product)"
-        class="hidden lg:block absolute z-10 top-full left-0 right-0 mt-1 bg-[var(--ui-bg)] border border-[var(--ui-border)] rounded-lg shadow-lg p-2"
-      >
-        <div class="grid grid-cols-1 gap-1">
-          <UButton
-            v-for="option in getOptions(product)"
-            :key="option.id"
-            size="sm"
-            color="neutral"
-            variant="soft"
-            class="justify-between"
-            @click.stop="selectOption(product, option.id)"
-          >
-            <span>{{ option.label }}</span>
-            <span v-if="option.priceModifier > 0" class="text-xs text-muted">+${{ option.priceModifier.toFixed(2) }}</span>
-          </UButton>
-        </div>
-      </div>
-
-      <!-- Mobile: Inline expansion -->
-      <div
-        v-if="activeProductId === product.id && hasOptions(product)"
-        class="lg:hidden mt-1 bg-[var(--ui-bg-muted)] rounded-lg p-2"
+        class="mt-1 bg-gray-800 border border-gray-700 rounded-lg p-2"
       >
         <div class="grid grid-cols-1 gap-1">
           <UButton
