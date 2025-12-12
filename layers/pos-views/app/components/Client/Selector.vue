@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-2">
+  <div class="space-y-2 p-3 -m-3 rounded-lg" :class="highlight ? 'border border-warning bg-warning/5' : ''">
     <label class="text-sm font-medium text-muted">Client</label>
 
     <!-- Reusable clients mode: dropdown with search and create -->
@@ -39,6 +39,7 @@ interface Client {
 const props = defineProps<{
   clients: Client[]
   useReusableClients: boolean
+  highlight?: boolean
 }>()
 
 const emit = defineEmits<{

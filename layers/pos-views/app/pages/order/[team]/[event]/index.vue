@@ -89,6 +89,7 @@
                     <ClientSelector
                       :clients="orderData?.clients || []"
                       :use-reusable-clients="orderData?.settings.useReusableClients || false"
+                      :highlight="!hasClient && cartItems.length > 0"
                       @update:client-id="onClientIdChange"
                       @update:client-name="onClientNameChange"
                     />
@@ -134,6 +135,7 @@
             <ClientSelector
               :clients="orderData?.clients || []"
               :use-reusable-clients="orderData?.settings.useReusableClients || false"
+              :highlight="!hasClient && cartItems.length > 0"
               @update:client-id="onClientIdChange"
               @update:client-name="onClientNameChange"
             />
@@ -267,14 +269,24 @@ const filteredProducts = computed(() => {
 })
 
 // Cart functions
-function addToCart(product: PosProduct, selectedOption?: string) {
-  // Find existing item with same product and same option
+function optionsEqual(a?: string | string[], b?: string | string[]): boolean {
+  if (!a && !b) return true
+  if (!a || !b) return false
+  if (typeof a === 'string' && typeof b === 'string') return a === b
+  if (Array.isArray(a) && Array.isArray(b)) {
+    if (a.length !== b.length) return false
+    const sortedA = [...a].sort()
+    const sortedB = [...b].sort()
+    return sortedA.every((val, i) => val === sortedB[i])
+  }
+  return false
+}
+
+function addToCart(product: PosProduct, selectedOption?: string | string[]) {
+  // Find existing item with same product and same options
   const existingItem = cartItems.value.find((item) => {
     if (item.product.id !== product.id) return false
-    // Both have no options
-    if (!item.selectedOptions && !selectedOption) return true
-    // Both have the same option
-    return item.selectedOptions === selectedOption
+    return optionsEqual(item.selectedOptions, selectedOption)
   })
 
   if (existingItem) {

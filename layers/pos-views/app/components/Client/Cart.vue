@@ -9,42 +9,34 @@
       <div
         v-for="(item, index) in items"
         :key="`${item.product.id}-${index}`"
-        class="flex items-center justify-between gap-2 py-2"
+        class="flex items-center gap-3 py-2"
       >
         <div class="flex-1 min-w-0">
           <p class="font-medium truncate">{{ item.product.title }}</p>
-          <p v-if="formatSelectedOptions(item)" class="text-xs text-info truncate">{{ formatSelectedOptions(item) }}</p>
-          <p v-if="item.remarks" class="text-xs text-muted truncate">{{ item.remarks }}</p>
-          <p class="text-sm text-muted">${{ calculateItemPrice(item).toFixed(2) }} each</p>
+          <p v-if="formatSelectedOptions(item)" class="text-xs text-muted truncate">{{ formatSelectedOptions(item) }}</p>
         </div>
 
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-1 shrink-0">
           <UButton
             icon="i-lucide-minus"
-            size="sm"
+            size="xs"
             color="neutral"
-            variant="soft"
+            variant="ghost"
             square
             @click="$emit('updateQuantity', index, item.quantity - 1)"
           />
-          <span class="w-8 text-center font-medium">{{ item.quantity }}</span>
+          <span class="w-6 text-center text-sm">{{ item.quantity }}</span>
           <UButton
             icon="i-lucide-plus"
-            size="sm"
+            size="xs"
             color="neutral"
-            variant="soft"
+            variant="ghost"
             square
             @click="$emit('updateQuantity', index, item.quantity + 1)"
           />
-          <UButton
-            icon="i-lucide-x"
-            size="sm"
-            color="error"
-            variant="ghost"
-            square
-            @click="$emit('remove', index)"
-          />
         </div>
+
+        <span class="w-16 text-right text-sm text-muted shrink-0">${{ (calculateItemPrice(item) * item.quantity).toFixed(2) }}</span>
       </div>
     </div>
 
@@ -55,6 +47,11 @@
           <UBadge v-if="items.length > 0" :label="items.length" size="sm" />
         </div>
         <span class="text-2xl font-bold">${{ total.toFixed(2) }}</span>
+      </div>
+
+      <div v-if="clientRequired && !hasClient && items.length > 0" class="flex items-center gap-2 p-3 rounded-lg bg-warning/10 border border-warning">
+        <UIcon name="i-lucide-alert-triangle" class="text-warning shrink-0" />
+        <span class="text-sm text-warning font-medium">Please select a client to proceed</span>
       </div>
 
       <div class="grid grid-cols-2 gap-2">
