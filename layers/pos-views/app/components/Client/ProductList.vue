@@ -53,21 +53,23 @@
         </template>
 
         <!-- Single-select mode -->
-        <template v-else>
+        <div v-else class="space-y-2">
           <UButton
             v-for="option in getOptions(product)"
             :key="option.id"
+            :label="option.label"
             block
-            size="sm"
-            color="neutral"
-            variant="soft"
-            class="justify-between"
+            size="md"
+            color="primary"
+            variant="ghost"
             @click="selectOption(product, option.id)"
           >
-            <span>{{ option.label }}</span>
-            <span v-if="option.priceModifier > 0" class="text-xs text-muted">+${{ option.priceModifier.toFixed(2) }}</span>
+            <template #trailing>
+              <span v-if="option.priceModifier > 0" class="text-xs opacity-70 ms-auto">+${{ option.priceModifier.toFixed(2) }}</span>
+              <UIcon name="i-lucide-plus" class="size-4" :class="{ 'ms-auto': !option.priceModifier }" />
+            </template>
           </UButton>
-        </template>
+        </div>
       </div>
     </UCard>
   </div>
