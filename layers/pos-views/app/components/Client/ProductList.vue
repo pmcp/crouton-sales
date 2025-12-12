@@ -2,73 +2,74 @@
   <div v-if="products.length === 0" class="text-center text-muted py-8">
     No products found
   </div>
-  <div v-else ref="containerRef" class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-2">
-    <div v-for="product in products" :key="product.id">
-      <div
-        class="rounded-lg bg-elevated p-4 cursor-pointer transition-colors"
-        :class="activeProductId === product.id ? 'ring-2 ring-primary' : 'hover:bg-accented'"
-        @click="handleProductClick(product)"
-      >
-        <!-- Product header -->
-        <div class="flex justify-between items-start">
-          <div>
-            <div class="font-medium">{{ product.title }}</div>
-            <div class="text-primary font-bold">${{ Number(product.price).toFixed(2) }}</div>
-          </div>
+  <div v-else ref="containerRef" class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+    <UCard
+      v-for="product in products"
+      :key="product.id"
+      variant="soft"
+      class="cursor-pointer"
+      :ui="{ body: 'p-4' }"
+      @click="handleProductClick(product)"
+    >
+      <!-- Product header -->
+      <div class="flex justify-between items-center gap-2">
+        <div class="font-medium">{{ product.title }}</div>
+        <div class="flex items-center gap-2 shrink-0">
+          <span class="text-muted">${{ Number(product.price).toFixed(2) }}</span>
           <UIcon v-if="hasOptions(product)" name="i-lucide-chevron-down" class="text-muted size-4 transition-transform" :class="{ 'rotate-180': activeProductId === product.id }" />
         </div>
-
-        <!-- Options (inside card) -->
-        <div
-          v-if="activeProductId === product.id && hasOptions(product)"
-          class="mt-3 pt-3 border-t border-muted space-y-2"
-          @click.stop
-        >
-          <!-- Multi-select mode -->
-          <template v-if="isMultiSelect(product)">
-            <UCheckbox
-              v-for="option in getOptions(product)"
-              :key="option.id"
-              :model-value="isOptionSelected(product.id, option.id)"
-              @update:model-value="toggleOption(product.id, option.id)"
-            >
-              <template #label>
-                <span class="flex items-center justify-between w-full">
-                  <span>{{ option.label }}</span>
-                  <span v-if="option.priceModifier > 0" class="text-xs text-muted ml-2">+${{ option.priceModifier.toFixed(2) }}</span>
-                </span>
-              </template>
-            </UCheckbox>
-            <UButton
-              block
-              size="sm"
-              color="primary"
-              class="mt-2"
-              @click="confirmMultiOptions(product)"
-            >
-              Add to Cart
-            </UButton>
-          </template>
-
-          <!-- Single-select mode -->
-          <template v-else>
-            <UButton
-              v-for="option in getOptions(product)"
-              :key="option.id"
-              block
-              size="sm"
-              color="neutral"
-              variant="soft"
-              class="justify-between"
-              @click="selectOption(product, option.id)"
-            >
-              <span>{{ option.label }}</span>
-              <span v-if="option.priceModifier > 0" class="text-xs text-muted">+${{ option.priceModifier.toFixed(2) }}</span>
-            </UButton>
-          </template>
-        </div>
       </div>
-    </div>
+
+      <!-- Options (inside card) -->
+      <div
+        v-if="activeProductId === product.id && hasOptions(product)"
+        class="mt-4 pt-4 border-t border-default space-y-3"
+        @click.stop
+      >
+        <!-- Multi-select mode -->
+        <template v-if="isMultiSelect(product)">
+          <UCheckbox
+            v-for="option in getOptions(product)"
+            :key="option.id"
+            :model-value="isOptionSelected(product.id, option.id)"
+            @update:model-value="toggleOption(product.id, option.id)"
+          >
+            <template #label>
+              <span class="flex items-center justify-between w-full">
+                <span>{{ option.label }}</span>
+                <span v-if="option.priceModifier > 0" class="text-xs text-muted ml-2">+${{ option.priceModifier.toFixed(2) }}</span>
+              </span>
+            </template>
+          </UCheckbox>
+          <UButton
+            block
+            size="sm"
+            color="primary"
+            class="mt-3"
+            @click="confirmMultiOptions(product)"
+          >
+            Add to Cart
+          </UButton>
+        </template>
+
+        <!-- Single-select mode -->
+        <template v-else>
+          <UButton
+            v-for="option in getOptions(product)"
+            :key="option.id"
+            block
+            size="sm"
+            color="neutral"
+            variant="soft"
+            class="justify-between"
+            @click="selectOption(product, option.id)"
+          >
+            <span>{{ option.label }}</span>
+            <span v-if="option.priceModifier > 0" class="text-xs text-muted">+${{ option.priceModifier.toFixed(2) }}</span>
+          </UButton>
+        </template>
+      </div>
+    </UCard>
   </div>
 </template>
 

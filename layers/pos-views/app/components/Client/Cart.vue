@@ -11,17 +11,25 @@
         :key="`${item.product.id}-${index}`"
         class="flex items-center gap-3 py-2"
       >
-        <div class="flex-1 min-w-0">
+        <div class="flex-1 min-w-0 space-y-1">
           <p class="font-medium truncate">{{ item.product.title }}</p>
-          <p v-if="formatSelectedOptions(item)" class="text-xs text-muted truncate">{{ formatSelectedOptions(item) }}</p>
+          <p
+            v-for="option in getSelectedOptionLabels(item)"
+            :key="option"
+            class="text-xs text-muted truncate pl-2"
+          >
+            {{ option }}
+          </p>
         </div>
+
+        <span class="w-16 text-right text-sm text-muted shrink-0">${{ (calculateItemPrice(item) * item.quantity).toFixed(2) }}</span>
 
         <div class="flex items-center gap-1 shrink-0">
           <UButton
             icon="i-lucide-minus"
             size="xs"
             color="neutral"
-            variant="ghost"
+            variant="soft"
             square
             @click="$emit('updateQuantity', index, item.quantity - 1)"
           />
@@ -30,13 +38,11 @@
             icon="i-lucide-plus"
             size="xs"
             color="neutral"
-            variant="ghost"
+            variant="soft"
             square
             @click="$emit('updateQuantity', index, item.quantity + 1)"
           />
         </div>
-
-        <span class="w-16 text-right text-sm text-muted shrink-0">${{ (calculateItemPrice(item) * item.quantity).toFixed(2) }}</span>
       </div>
     </div>
 
@@ -106,16 +112,15 @@ defineEmits<{
   clear: []
 }>()
 
-// Format selected options for display
-function formatSelectedOptions(item: CartItem): string {
-  if (!item.selectedOptions || !item.product.options) return ''
+// Get selected option labels as array
+function getSelectedOptionLabels(item: CartItem): string[] {
+  if (!item.selectedOptions || !item.product.options) return []
   const optionIds = Array.isArray(item.selectedOptions)
     ? item.selectedOptions
     : [item.selectedOptions]
   return optionIds
     .map(id => item.product.options?.find(o => o.id === id)?.label)
-    .filter(Boolean)
-    .join(', ')
+    .filter((label): label is string => Boolean(label))
 }
 
 // Calculate item price including option modifiers
