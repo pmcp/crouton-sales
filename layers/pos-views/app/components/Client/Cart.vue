@@ -22,7 +22,7 @@
           </p>
         </div>
 
-        <span class="w-16 text-right text-sm text-muted shrink-0">${{ (calculateItemPrice(item) * item.quantity).toFixed(2) }}</span>
+        <span :key="calculateItemPrice(item) * item.quantity" class="w-16 text-right text-sm text-muted shrink-0 animate-pop">${{ (calculateItemPrice(item) * item.quantity).toFixed(2) }}</span>
 
         <div class="flex items-center gap-1 shrink-0">
           <UButton
@@ -33,7 +33,7 @@
             square
             @click="$emit('updateQuantity', index, item.quantity - 1)"
           />
-          <span class="w-6 text-center text-sm">{{ item.quantity }}</span>
+          <span :key="item.quantity" class="w-6 text-center text-sm animate-pop">{{ item.quantity }}</span>
           <UButton
             icon="i-lucide-plus"
             size="xs"
@@ -138,3 +138,21 @@ function calculateItemPrice(item: CartItem): number {
   return price
 }
 </script>
+
+<style scoped>
+.animate-pop {
+  animation: pop 0.15s ease-out;
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+</style>
