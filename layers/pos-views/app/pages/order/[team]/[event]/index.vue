@@ -69,18 +69,24 @@
           />
         </template>
 
-        <!-- Mobile cart button -->
+        <!-- Mobile cart bar -->
         <template #footer>
           <div class="lg:hidden">
             <UDrawer direction="bottom">
-              <UButton
-                block
-                size="xl"
-                :label="cartItems.length > 0 ? `View Cart (${cartItems.length}) · $${cartTotal.toFixed(2)}` : 'Cart is empty'"
-                icon="i-lucide-shopping-cart"
-                :color="cartItems.length > 0 ? 'primary' : 'neutral'"
-                :variant="cartItems.length > 0 ? 'solid' : 'soft'"
-              />
+              <div
+                class="flex items-center justify-between px-4 py-3 bg-elevated/80 backdrop-blur-sm border border-default rounded-t-xl shadow-lg cursor-pointer hover:bg-elevated transition-colors"
+              >
+                <div class="flex items-center gap-2">
+                  <span class="text-base font-medium">Total</span>
+                  <span
+                    v-if="cartItems.length > 0"
+                    class="bg-primary text-primary-foreground text-xs font-medium rounded px-1.5 py-0.5"
+                  >
+                    {{ cartItems.length }}
+                  </span>
+                </div>
+                <span class="text-base font-semibold">${{ cartTotal.toFixed(2) }}</span>
+              </div>
 
               <template #content>
                 <div class="h-[70vh] flex flex-col">
