@@ -21,56 +21,58 @@
       </div>
 
       <!-- Options (inside card) -->
-      <div
-        v-if="activeProductId === product.id && hasOptions(product)"
-        class="mt-4 pt-4 border-t border-default space-y-3"
-        @click.stop
-      >
-        <!-- Multi-select mode -->
-        <template v-if="isMultiSelect(product)">
-          <UCheckbox
-            v-for="option in getOptions(product)"
-            :key="option.id"
-            :model-value="isOptionSelected(product.id, option.id)"
-            @update:model-value="toggleOption(product.id, option.id)"
-          >
-            <template #label>
-              <span class="flex items-center justify-between w-full">
-                <span>{{ option.label }}</span>
-                <span v-if="option.priceModifier > 0" class="text-xs text-muted ml-2">+${{ option.priceModifier.toFixed(2) }}</span>
-              </span>
-            </template>
-          </UCheckbox>
-          <UButton
-            block
-            size="sm"
-            color="primary"
-            class="mt-3"
-            @click="confirmMultiOptions(product)"
-          >
-            Add to Cart
-          </UButton>
-        </template>
+      <Transition name="slide">
+        <div
+          v-if="activeProductId === product.id && hasOptions(product)"
+          class="mt-4 pt-4 border-t border-default space-y-3"
+          @click.stop
+        >
+          <!-- Multi-select mode -->
+          <template v-if="isMultiSelect(product)">
+            <UCheckbox
+              v-for="option in getOptions(product)"
+              :key="option.id"
+              :model-value="isOptionSelected(product.id, option.id)"
+              @update:model-value="toggleOption(product.id, option.id)"
+            >
+              <template #label>
+                <span class="flex items-center justify-between w-full">
+                  <span>{{ option.label }}</span>
+                  <span v-if="option.priceModifier > 0" class="text-xs text-muted ml-2">+${{ option.priceModifier.toFixed(2) }}</span>
+                </span>
+              </template>
+            </UCheckbox>
+            <UButton
+              block
+              size="sm"
+              color="primary"
+              class="mt-3"
+              @click="confirmMultiOptions(product)"
+            >
+              Add to Cart
+            </UButton>
+          </template>
 
-        <!-- Single-select mode -->
-        <div v-else class="space-y-2">
-          <UButton
-            v-for="option in getOptions(product)"
-            :key="option.id"
-            :label="option.label"
-            block
-            size="md"
-            color="primary"
-            variant="ghost"
-            @click="selectOption(product, option.id)"
-          >
-            <template #trailing>
-              <span v-if="option.priceModifier > 0" class="text-xs opacity-70 ms-auto">+${{ option.priceModifier.toFixed(2) }}</span>
-              <UIcon name="i-lucide-plus" class="size-4" :class="{ 'ms-auto': !option.priceModifier }" />
-            </template>
-          </UButton>
+          <!-- Single-select mode -->
+          <div v-else class="space-y-2">
+            <UButton
+              v-for="option in getOptions(product)"
+              :key="option.id"
+              :label="option.label"
+              block
+              size="md"
+              color="primary"
+              variant="ghost"
+              @click="selectOption(product, option.id)"
+            >
+              <template #trailing>
+                <span v-if="option.priceModifier > 0" class="text-xs opacity-70 ms-auto">+${{ option.priceModifier.toFixed(2) }}</span>
+                <UIcon name="i-lucide-plus" class="size-4" :class="{ 'ms-auto': !option.priceModifier }" />
+              </template>
+            </UButton>
+          </div>
         </div>
-      </div>
+      </Transition>
     </UCard>
   </div>
 </template>
@@ -127,7 +129,6 @@ function confirmMultiOptions(product: PosProduct) {
   const selected = selectedOptionIds.value.get(product.id) || []
   emit('select', product, selected.length > 0 ? selected : undefined)
   selectedOptionIds.value.delete(product.id)
-  activeProductId.value = null
 }
 
 function handleProductClick(product: PosProduct) {
@@ -147,7 +148,6 @@ function handleProductClick(product: PosProduct) {
 
 function selectOption(product: PosProduct, optionId: string) {
   emit('select', product, optionId)
-  activeProductId.value = null
 }
 
 // Close on click outside
@@ -158,3 +158,23 @@ onClickOutside(containerRef, () => {
   activeProductId.value = null
 })
 </script>
+
+<style scoped>
+.slide-enter-active {
+  transition: opacity 150ms ease-out, transform 150ms ease-out;
+}
+
+.slide-leave-active {
+  transition: opacity 100ms ease-in, transform 100ms ease-in;
+}
+
+.slide-enter-from {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+.slide-leave-to {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+</style>
