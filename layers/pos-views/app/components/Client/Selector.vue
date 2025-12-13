@@ -40,6 +40,8 @@ const props = defineProps<{
   clients: Client[]
   useReusableClients: boolean
   highlight?: boolean
+  clientId?: string | null
+  clientName?: string
 }>()
 
 const emit = defineEmits<{
@@ -104,5 +106,18 @@ watch(selectedValue, (value) => {
 watch(clientName, (value) => {
   emit('update:clientName', value)
   emit('update:clientId', null)
+})
+
+// Sync with external props (for clearing/resetting)
+watch(() => props.clientId, (newId) => {
+  if (newId === null && props.useReusableClients) {
+    selectedValue.value = ''
+  }
+})
+
+watch(() => props.clientName, (newName) => {
+  if (!props.useReusableClients && newName !== clientName.value) {
+    clientName.value = newName || ''
+  }
 })
 </script>

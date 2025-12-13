@@ -90,6 +90,8 @@
                       :clients="orderData?.clients || []"
                       :use-reusable-clients="orderData?.settings.useReusableClients || false"
                       :highlight="!hasClient && cartItems.length > 0"
+                      :client-id="selectedClientId"
+                      :client-name="selectedClientName"
                       @update:client-id="onClientIdChange"
                       @update:client-name="onClientNameChange"
                     />
@@ -136,6 +138,8 @@
               :clients="orderData?.clients || []"
               :use-reusable-clients="orderData?.settings.useReusableClients || false"
               :highlight="!hasClient && cartItems.length > 0"
+              :client-id="selectedClientId"
+              :client-name="selectedClientName"
               @update:client-id="onClientIdChange"
               @update:client-name="onClientNameChange"
             />
