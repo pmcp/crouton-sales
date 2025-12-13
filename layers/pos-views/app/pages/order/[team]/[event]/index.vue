@@ -79,13 +79,14 @@
                 <div class="flex items-center gap-2">
                   <span class="text-base font-medium">Total</span>
                   <span
-                    v-if="cartItems.length > 0"
-                    class="bg-primary text-primary-foreground text-xs font-medium rounded px-1.5 py-0.5"
+                    v-if="cartItemCount > 0"
+                    :key="cartItemCount"
+                    class="bg-primary text-primary-foreground text-xs font-medium rounded px-1.5 py-0.5 animate-pop"
                   >
-                    {{ cartItems.length }}
+                    {{ cartItemCount }}
                   </span>
                 </div>
-                <span class="text-base font-semibold">${{ cartTotal.toFixed(2) }}</span>
+                <span :key="cartTotal" class="text-base font-semibold animate-pop">${{ cartTotal.toFixed(2) }}</span>
               </div>
 
               <template #content>
@@ -242,6 +243,10 @@ const cartTotal = computed(() => {
   return cartItems.value.reduce((total, item) => {
     return total + calculateItemPrice(item) * item.quantity
   }, 0)
+})
+
+const cartItemCount = computed(() => {
+  return cartItems.value.reduce((count, item) => count + item.quantity, 0)
 })
 
 function calculateItemPrice(item: CartItem): number {
@@ -456,3 +461,21 @@ onMounted(() => {
   loadData()
 })
 </script>
+
+<style scoped>
+.animate-pop {
+  animation: pop 0.15s ease-out;
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+</style>
