@@ -47,13 +47,7 @@
     </div>
 
     <template #footer>
-      <div class="flex justify-between items-center">
-        <div class="flex items-center gap-2">
-          <span class="text-lg font-semibold">Total</span>
-          <UBadge v-if="items.length > 0" :label="items.length" size="sm" />
-        </div>
-        <span class="text-2xl font-bold">${{ total.toFixed(2) }}</span>
-      </div>
+      <ClientCartTotal :count="itemCount" :total="total" />
 
       <div v-if="clientRequired && !hasClient && items.length > 0" class="flex items-center gap-2 p-3 rounded-lg bg-warning/10 border border-warning">
         <UIcon name="i-lucide-alert-triangle" class="text-warning shrink-0" />
@@ -97,13 +91,17 @@ interface CartItem<T extends { id: string, title: string, price: number, options
   selectedOptions?: string | string[]
 }
 
-defineProps<{
+const props = defineProps<{
   items: CartItem<any>[]
   total: number
   disabled: boolean
   clientRequired?: boolean
   hasClient?: boolean
 }>()
+
+const itemCount = computed(() => {
+  return props.items.reduce((count, item) => count + item.quantity, 0)
+})
 
 defineEmits<{
   updateQuantity: [index: number, quantity: number]

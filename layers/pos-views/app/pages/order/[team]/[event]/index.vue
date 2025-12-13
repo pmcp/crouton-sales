@@ -74,19 +74,9 @@
           <div class="lg:hidden">
             <UDrawer direction="bottom">
               <div
-                class="flex items-center justify-between px-4 py-3 bg-elevated/80 backdrop-blur-sm border border-default rounded-t-xl shadow-lg cursor-pointer hover:bg-elevated transition-colors"
+                class="px-4 py-3 bg-elevated/80 backdrop-blur-sm border border-default rounded-t-xl shadow-lg cursor-pointer hover:bg-elevated transition-colors"
               >
-                <div class="flex items-center gap-2">
-                  <span class="text-base font-medium">Total</span>
-                  <span
-                    v-if="cartItemCount > 0"
-                    :key="cartItemCount"
-                    class="bg-primary text-primary-foreground text-xs font-medium rounded px-1.5 py-0.5 animate-pop"
-                  >
-                    {{ cartItemCount }}
-                  </span>
-                </div>
-                <span :key="cartTotal" class="text-base font-semibold animate-pop">${{ cartTotal.toFixed(2) }}</span>
+                <ClientCartTotal :count="cartItemCount" :total="cartTotal" size="sm" />
               </div>
 
               <template #content>
@@ -461,21 +451,3 @@ onMounted(() => {
   loadData()
 })
 </script>
-
-<style scoped>
-.animate-pop {
-  animation: pop 0.15s ease-out;
-}
-
-@keyframes pop {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.2);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-</style>
