@@ -28,6 +28,7 @@ import usePosLocations from '../composables/usePosLocations'
 
 const props = withDefaults(defineProps<{
   layout?: any
+  query?: Record<string, any>
 }>(), {
   layout: 'table'
 })
@@ -35,6 +36,7 @@ const props = withDefaults(defineProps<{
 const { columns } = usePosLocations()
 
 const { items: locations, pending } = await useCollectionQuery(
-  'posLocations'
+  'posLocations',
+  { query: computed(() => props.query || {}) }
 )
 </script>

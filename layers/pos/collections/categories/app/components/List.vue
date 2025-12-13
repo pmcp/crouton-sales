@@ -28,6 +28,7 @@ import usePosCategories from '../composables/usePosCategories'
 
 const props = withDefaults(defineProps<{
   layout?: any
+  query?: Record<string, any>
 }>(), {
   layout: 'table'
 })
@@ -35,6 +36,7 @@ const props = withDefaults(defineProps<{
 const { columns } = usePosCategories()
 
 const { items: categories, pending } = await useCollectionQuery(
-  'posCategories'
+  'posCategories',
+  { query: computed(() => props.query || {}) }
 )
 </script>

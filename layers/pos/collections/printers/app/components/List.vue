@@ -35,6 +35,7 @@ import usePosPrinters from '../composables/usePosPrinters'
 
 const props = withDefaults(defineProps<{
   layout?: any
+  query?: Record<string, any>
 }>(), {
   layout: 'table'
 })
@@ -42,6 +43,7 @@ const props = withDefaults(defineProps<{
 const { columns } = usePosPrinters()
 
 const { items: printers, pending } = await useCollectionQuery(
-  'posPrinters'
+  'posPrinters',
+  { query: computed(() => props.query || {}) }
 )
 </script>

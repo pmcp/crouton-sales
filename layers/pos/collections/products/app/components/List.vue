@@ -42,6 +42,7 @@ import usePosProducts from '../composables/usePosProducts'
 
 const props = withDefaults(defineProps<{
   layout?: any
+  query?: Record<string, any>
 }>(), {
   layout: 'table'
 })
@@ -49,6 +50,7 @@ const props = withDefaults(defineProps<{
 const { columns } = usePosProducts()
 
 const { items: products, pending } = await useCollectionQuery(
-  'posProducts'
+  'posProducts',
+  { query: computed(() => props.query || {}) }
 )
 </script>

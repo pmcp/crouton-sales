@@ -34,6 +34,7 @@ import usePosHelpers from '../composables/usePosHelpers'
 
 const props = withDefaults(defineProps<{
   layout?: any
+  query?: Record<string, any>
 }>(), {
   layout: 'table'
 })
@@ -41,6 +42,7 @@ const props = withDefaults(defineProps<{
 const { columns } = usePosHelpers()
 
 const { items: helpers, pending } = await useCollectionQuery(
-  'posHelpers'
+  'posHelpers',
+  { query: computed(() => props.query || {}) }
 )
 </script>
