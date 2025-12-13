@@ -2,7 +2,7 @@
 // The #crouton/team-auth alias is provided by @friendlyinternet/nuxt-crouton
 // Install: pnpm add @friendlyinternet/nuxt-crouton
 // Config: Add '@friendlyinternet/nuxt-crouton' to extends array in nuxt.config.ts
-import { getAllPosPrinters, getPosPrintersByIds } from '../../../../database/queries'
+import { getAllPosPrinters, getPosPrintersByIds, getPosPrintersByEventId } from '../../../../database/queries'
 import { resolveTeamAndCheckMembership } from '#crouton/team-auth'
 
 export default defineEventHandler(async (event) => {
@@ -12,6 +12,10 @@ export default defineEventHandler(async (event) => {
   if (query.ids) {
     const ids = String(query.ids).split(',')
     return await getPosPrintersByIds(team.id, ids)
+  }
+
+  if (query.eventId) {
+    return await getPosPrintersByEventId(team.id, String(query.eventId))
   }
 
   return await getAllPosPrinters(team.id)

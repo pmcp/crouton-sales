@@ -95,6 +95,53 @@ export async function getPosCategoriesByIds(teamId: string, categorieIds: string
   return categories
 }
 
+export async function getPosCategoriesByEventId(teamId: string, eventId: string) {
+  const db = useDB()
+
+  const ownerUsers = alias(users, 'ownerUsers')
+  const createdByUsers = alias(users, 'createdByUsers')
+  const updatedByUsers = alias(users, 'updatedByUsers')
+
+  // @ts-expect-error Complex select with joins requires type assertion
+  const categories = await db
+    .select({
+      ...tables.posCategories,
+      eventIdData: eventsSchema.posEvents,
+      ownerUser: {
+        id: ownerUsers.id,
+        name: ownerUsers.name,
+        email: ownerUsers.email,
+        avatarUrl: ownerUsers.avatarUrl
+      },
+      createdByUser: {
+        id: createdByUsers.id,
+        name: createdByUsers.name,
+        email: createdByUsers.email,
+        avatarUrl: createdByUsers.avatarUrl
+      },
+      updatedByUser: {
+        id: updatedByUsers.id,
+        name: updatedByUsers.name,
+        email: updatedByUsers.email,
+        avatarUrl: updatedByUsers.avatarUrl
+      }
+    })
+    .from(tables.posCategories)
+    .leftJoin(eventsSchema.posEvents, eq(tables.posCategories.eventId, eventsSchema.posEvents.id))
+    .leftJoin(ownerUsers, eq(tables.posCategories.owner, ownerUsers.id))
+    .leftJoin(createdByUsers, eq(tables.posCategories.createdBy, createdByUsers.id))
+    .leftJoin(updatedByUsers, eq(tables.posCategories.updatedBy, updatedByUsers.id))
+    .where(
+      and(
+        eq(tables.posCategories.teamId, teamId),
+        eq(tables.posCategories.eventId, eventId)
+      )
+    )
+    .orderBy(desc(tables.posCategories.createdAt))
+
+  return categories
+}
+
 export async function createPosCategorie(data: NewPosCategorie) {
   const db = useDB()
 

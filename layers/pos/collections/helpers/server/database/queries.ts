@@ -95,6 +95,53 @@ export async function getPosHelpersByIds(teamId: string, helperIds: string[]) {
   return helpers
 }
 
+export async function getPosHelpersByEventId(teamId: string, eventId: string) {
+  const db = useDB()
+
+  const ownerUsers = alias(users, 'ownerUsers')
+  const createdByUsers = alias(users, 'createdByUsers')
+  const updatedByUsers = alias(users, 'updatedByUsers')
+
+  // @ts-expect-error Complex select with joins requires type assertion
+  const helpers = await db
+    .select({
+      ...tables.posHelpers,
+      eventIdData: eventsSchema.posEvents,
+      ownerUser: {
+        id: ownerUsers.id,
+        name: ownerUsers.name,
+        email: ownerUsers.email,
+        avatarUrl: ownerUsers.avatarUrl
+      },
+      createdByUser: {
+        id: createdByUsers.id,
+        name: createdByUsers.name,
+        email: createdByUsers.email,
+        avatarUrl: createdByUsers.avatarUrl
+      },
+      updatedByUser: {
+        id: updatedByUsers.id,
+        name: updatedByUsers.name,
+        email: updatedByUsers.email,
+        avatarUrl: updatedByUsers.avatarUrl
+      }
+    })
+    .from(tables.posHelpers)
+    .leftJoin(eventsSchema.posEvents, eq(tables.posHelpers.eventId, eventsSchema.posEvents.id))
+    .leftJoin(ownerUsers, eq(tables.posHelpers.owner, ownerUsers.id))
+    .leftJoin(createdByUsers, eq(tables.posHelpers.createdBy, createdByUsers.id))
+    .leftJoin(updatedByUsers, eq(tables.posHelpers.updatedBy, updatedByUsers.id))
+    .where(
+      and(
+        eq(tables.posHelpers.teamId, teamId),
+        eq(tables.posHelpers.eventId, eventId)
+      )
+    )
+    .orderBy(desc(tables.posHelpers.createdAt))
+
+  return helpers
+}
+
 export async function createPosHelper(data: NewPosHelper) {
   const db = useDB()
 

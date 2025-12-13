@@ -95,6 +95,53 @@ export async function getPosLocationsByIds(teamId: string, locationIds: string[]
   return locations
 }
 
+export async function getPosLocationsByEventId(teamId: string, eventId: string) {
+  const db = useDB()
+
+  const ownerUsers = alias(users, 'ownerUsers')
+  const createdByUsers = alias(users, 'createdByUsers')
+  const updatedByUsers = alias(users, 'updatedByUsers')
+
+  // @ts-expect-error Complex select with joins requires type assertion
+  const locations = await db
+    .select({
+      ...tables.posLocations,
+      eventIdData: eventsSchema.posEvents,
+      ownerUser: {
+        id: ownerUsers.id,
+        name: ownerUsers.name,
+        email: ownerUsers.email,
+        avatarUrl: ownerUsers.avatarUrl
+      },
+      createdByUser: {
+        id: createdByUsers.id,
+        name: createdByUsers.name,
+        email: createdByUsers.email,
+        avatarUrl: createdByUsers.avatarUrl
+      },
+      updatedByUser: {
+        id: updatedByUsers.id,
+        name: updatedByUsers.name,
+        email: updatedByUsers.email,
+        avatarUrl: updatedByUsers.avatarUrl
+      }
+    })
+    .from(tables.posLocations)
+    .leftJoin(eventsSchema.posEvents, eq(tables.posLocations.eventId, eventsSchema.posEvents.id))
+    .leftJoin(ownerUsers, eq(tables.posLocations.owner, ownerUsers.id))
+    .leftJoin(createdByUsers, eq(tables.posLocations.createdBy, createdByUsers.id))
+    .leftJoin(updatedByUsers, eq(tables.posLocations.updatedBy, updatedByUsers.id))
+    .where(
+      and(
+        eq(tables.posLocations.teamId, teamId),
+        eq(tables.posLocations.eventId, eventId)
+      )
+    )
+    .orderBy(desc(tables.posLocations.createdAt))
+
+  return locations
+}
+
 export async function createPosLocation(data: NewPosLocation) {
   const db = useDB()
 

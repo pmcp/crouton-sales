@@ -105,6 +105,57 @@ export async function getPosProductsByIds(teamId: string, productIds: string[]) 
   return products
 }
 
+export async function getPosProductsByEventId(teamId: string, eventId: string) {
+  const db = useDB()
+
+  const ownerUsers = alias(users, 'ownerUsers')
+  const createdByUsers = alias(users, 'createdByUsers')
+  const updatedByUsers = alias(users, 'updatedByUsers')
+
+  // @ts-expect-error Complex select with joins requires type assertion
+  const products = await db
+    .select({
+      ...tables.posProducts,
+      eventIdData: eventsSchema.posEvents,
+      categoryIdData: categoriesSchema.posCategories,
+      locationIdData: locationsSchema.posLocations,
+      ownerUser: {
+        id: ownerUsers.id,
+        name: ownerUsers.name,
+        email: ownerUsers.email,
+        avatarUrl: ownerUsers.avatarUrl
+      },
+      createdByUser: {
+        id: createdByUsers.id,
+        name: createdByUsers.name,
+        email: createdByUsers.email,
+        avatarUrl: createdByUsers.avatarUrl
+      },
+      updatedByUser: {
+        id: updatedByUsers.id,
+        name: updatedByUsers.name,
+        email: updatedByUsers.email,
+        avatarUrl: updatedByUsers.avatarUrl
+      }
+    })
+    .from(tables.posProducts)
+    .leftJoin(eventsSchema.posEvents, eq(tables.posProducts.eventId, eventsSchema.posEvents.id))
+    .leftJoin(categoriesSchema.posCategories, eq(tables.posProducts.categoryId, categoriesSchema.posCategories.id))
+    .leftJoin(locationsSchema.posLocations, eq(tables.posProducts.locationId, locationsSchema.posLocations.id))
+    .leftJoin(ownerUsers, eq(tables.posProducts.owner, ownerUsers.id))
+    .leftJoin(createdByUsers, eq(tables.posProducts.createdBy, createdByUsers.id))
+    .leftJoin(updatedByUsers, eq(tables.posProducts.updatedBy, updatedByUsers.id))
+    .where(
+      and(
+        eq(tables.posProducts.teamId, teamId),
+        eq(tables.posProducts.eventId, eventId)
+      )
+    )
+    .orderBy(desc(tables.posProducts.createdAt))
+
+  return products
+}
+
 export async function createPosProduct(data: NewPosProduct) {
   const db = useDB()
 
