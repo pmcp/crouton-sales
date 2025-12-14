@@ -7,6 +7,26 @@ export interface ReceiptItem {
   notes?: string
 }
 
+export interface ReceiptSettings {
+  items_section_title: string
+  special_instructions_title: string
+  complete_order_header: string
+  staff_order_header: string
+  footer_text: string
+  test_title: string
+  test_success_message: string
+}
+
+export const DEFAULT_RECEIPT_SETTINGS: ReceiptSettings = {
+  items_section_title: 'ITEMS:',
+  special_instructions_title: 'SPECIAL INSTRUCTIONS:',
+  complete_order_header: '*** COMPLETE ORDER ***',
+  staff_order_header: '*** STAFF ORDER ***',
+  footer_text: 'Thank you for your order!',
+  test_title: 'PRINTER TEST',
+  test_success_message: 'Test completed successfully!'
+}
+
 export interface ReceiptData {
   orderNumber: number | string
   orderId: string
@@ -21,6 +41,7 @@ export interface ReceiptData {
   showPrices: boolean
   createdAt: Date | string
   isPersonnel?: boolean
+  receiptSettings?: ReceiptSettings
 }
 
 export interface FormattedReceipt {
@@ -75,11 +96,12 @@ export function formatReceipt(data: ReceiptData): FormattedReceipt {
 
     // Staff order indicator
     if (data.isPersonnel) {
+      const settings = data.receiptSettings || DEFAULT_RECEIPT_SETTINGS
       printer.println('')
       printer.alignCenter()
       printer.bold(true)
       printer.invert(true)
-      printer.println('*** STAFF ORDER ***')
+      printer.println(settings.staff_order_header)
       printer.invert(false)
       printer.bold(false)
       printer.alignLeft()
@@ -87,9 +109,10 @@ export function formatReceipt(data: ReceiptData): FormattedReceipt {
 
     // Special instructions at the top for kitchen
     if (data.orderNotes && data.printMode === 'kitchen') {
+      const settings = data.receiptSettings || DEFAULT_RECEIPT_SETTINGS
       printer.drawLine()
       printer.bold(true)
-      printer.println('SPECIAL INSTRUCTIONS:')
+      printer.println(settings.special_instructions_title)
       printer.bold(false)
       printer.println(data.orderNotes)
     }
@@ -158,8 +181,9 @@ export function formatReceipt(data: ReceiptData): FormattedReceipt {
     printer.drawLine()
 
     if (data.printMode === 'receipt') {
+      const settings = data.receiptSettings || DEFAULT_RECEIPT_SETTINGS
       printer.alignCenter()
-      printer.println('Thank You!')
+      printer.println(settings.footer_text)
     }
 
     // Extra spacing and cut
@@ -215,7 +239,13 @@ export function formatReceipt(data: ReceiptData): FormattedReceipt {
 /**
  * Generate a test receipt for printer testing
  */
-export function formatTestReceipt(printerName: string, ipAddress: string): FormattedReceipt {
+export function formatTestReceipt(
+  printerName: string,
+  ipAddress: string,
+  receiptSettings?: ReceiptSettings
+): FormattedReceipt {
+  const settings = receiptSettings || DEFAULT_RECEIPT_SETTINGS
+
   const printer = new ThermalPrinter({
     type: PrinterTypes.EPSON,
     interface: 'tcp://dummy',
@@ -225,7 +255,7 @@ export function formatTestReceipt(printerName: string, ipAddress: string): Forma
 
   printer.alignCenter()
   printer.bold(true)
-  printer.println('PRINTER TEST')
+  printer.println(settings.test_title)
   printer.bold(false)
   printer.drawLine()
 
@@ -236,7 +266,7 @@ export function formatTestReceipt(printerName: string, ipAddress: string): Forma
   printer.drawLine()
 
   printer.alignCenter()
-  printer.println('Test successful!')
+  printer.println(settings.test_success_message)
   printer.println('ESC/POS formatting active')
   printer.println('')
   printer.cut()

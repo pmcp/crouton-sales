@@ -1,0 +1,80 @@
+import { eq, and } from 'drizzle-orm'
+import { nanoid } from 'nanoid'
+import { resolveTeamAndCheckMembership } from '#crouton/team-auth'
+import { posEventsettings } from '../../../../../database/schema'
+
+export interface ReceiptSettings {
+  items_section_title: string
+  special_instructions_title: string
+  complete_order_header: string
+  staff_order_header: string
+  footer_text: string
+  test_title: string
+  test_success_message: string
+}
+
+export default defineEventHandler(async (event) => {
+  const { team, user } = await resolveTeamAndCheckMembership(event)
+  const eventId = getRouterParam(event, 'eventId')
+
+  if (!eventId) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Event ID is required'
+    })
+  }
+
+  const body = await readBody<ReceiptSettings>(event)
+
+  if (!body) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Request body is required'
+    })
+  }
+
+  const db = useDB()
+  const settingValue = JSON.stringify(body)
+
+  // Look for existing receipt_settings entry
+  const [existing] = await db
+    .select()
+    .from(posEventsettings)
+    .where(
+      and(
+        eq(posEventsettings.teamId, team.id),
+        eq(posEventsettings.eventId, eventId),
+        eq(posEventsettings.settingKey, 'receipt_settings')
+      )
+    )
+
+  if (existing) {
+    // Update existing
+    await db
+      .update(posEventsettings)
+      .set({
+        settingValue,
+        updatedBy: user.id
+      })
+      .where(eq(posEventsettings.id, existing.id))
+  } else {
+    // Create new
+    await db
+      .insert(posEventsettings)
+      .values({
+        id: nanoid(),
+        teamId: team.id,
+        owner: user.id,
+        eventId,
+        settingKey: 'receipt_settings',
+        settingValue,
+        description: 'Receipt text customization settings',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        createdBy: user.id,
+        updatedBy: user.id
+      })
+  }
+
+  return { success: true }
+})

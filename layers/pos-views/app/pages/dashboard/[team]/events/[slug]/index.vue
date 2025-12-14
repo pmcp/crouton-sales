@@ -33,7 +33,7 @@
     </div>
 
     <!-- Settings Row -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
       <!-- Client Mode Setting -->
       <UCard>
         <template #header>
@@ -70,6 +70,25 @@
             @click="saveHelperPin"
           >
             Save PIN
+          </UButton>
+        </div>
+      </UCard>
+
+      <!-- Receipt Settings -->
+      <UCard>
+        <template #header>
+          <h2 class="text-lg font-semibold">Receipt Settings</h2>
+        </template>
+        <div class="space-y-4">
+          <p class="text-sm text-muted">
+            Customize the text that appears on printed receipts.
+          </p>
+          <UButton
+            variant="outline"
+            icon="i-lucide-receipt"
+            @click="showReceiptSettings = true"
+          >
+            Edit Receipt Text
           </UButton>
         </div>
       </UCard>
@@ -182,6 +201,16 @@
               </UButton>
             </div>
           </template>
+          <template #card-actions="{ row }">
+            <UButton
+              variant="ghost"
+              size="xs"
+              icon="i-lucide-eye"
+              @click.stop="openPrinterPreview(row)"
+            >
+              Preview
+            </UButton>
+          </template>
         </CroutonCollection>
         <div v-else class="p-6 text-center text-muted">
           <p>No printers yet</p>
@@ -228,6 +257,23 @@
         Start Taking Orders
       </UButton>
     </div>
+
+    <!-- Receipt Settings Modal -->
+    <SettingsReceiptSettingsModal
+      v-if="event"
+      v-model="showReceiptSettings"
+      :team-id="route.params.team as string"
+      :event-id="event.id"
+      @saved="loadReceiptSettings"
+    />
+
+    <!-- Print Preview Modal -->
+    <SettingsPrintPreviewModal
+      v-model="showPrinterPreview"
+      :printer="selectedPrinter"
+      :team-id="route.params.team as string"
+      :receipt-settings="receiptSettings"
+    />
   </div>
 </template>
 
@@ -287,12 +333,43 @@ const savingHelperPin = ref(false)
 // Duplicate state
 const duplicating = ref(false)
 
+// Receipt settings modal state
+const showReceiptSettings = ref(false)
+
+// Printer preview modal state
+const showPrinterPreview = ref(false)
+const selectedPrinter = ref<any>(null)
+
+// Receipt settings for preview
+interface ReceiptSettings {
+  items_section_title: string
+  special_instructions_title: string
+  complete_order_header: string
+  staff_order_header: string
+  footer_text: string
+  test_title: string
+  test_success_message: string
+}
+
+const receiptSettings = ref<ReceiptSettings>({
+  items_section_title: 'ITEMS:',
+  special_instructions_title: 'SPECIAL INSTRUCTIONS:',
+  complete_order_header: '*** COMPLETE ORDER ***',
+  staff_order_header: '*** STAFF ORDER ***',
+  footer_text: 'Thank you for your order!',
+  test_title: 'PRINTER TEST',
+  test_success_message: 'Test completed successfully!'
+})
+
 // Initialize values when event and settings load
 watch([event, eventSettings], () => {
   if (event.value) {
     // Initialize helper PIN
     helperPin.value = event.value.helperPin || ''
     originalHelperPin.value = event.value.helperPin || ''
+
+    // Load receipt settings
+    loadReceiptSettings()
   }
 
   if (clientModeSetting.value) {
@@ -390,6 +467,27 @@ function openCreatePrinter() {
 function openCreateHelper() {
   if (!event.value) return
   open('create', 'posHelpers', [], 'slideover', { eventId: event.value.id })
+}
+
+// Load receipt settings
+async function loadReceiptSettings() {
+  if (!event.value) return
+
+  try {
+    const teamId = route.params.team as string
+    const data = await $fetch<ReceiptSettings>(
+      `/api/teams/${teamId}/pos-eventsettings/receipt-settings/${event.value.id}`
+    )
+    receiptSettings.value = data
+  } catch (error) {
+    console.error('Error loading receipt settings:', error)
+  }
+}
+
+// Open printer preview
+function openPrinterPreview(printer: any) {
+  selectedPrinter.value = printer
+  showPrinterPreview.value = true
 }
 
 // Duplicate event
