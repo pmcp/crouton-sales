@@ -29,6 +29,7 @@
             v-model="state.categoryId"
             collection="posCategories"
             label="CategoryId"
+            :query="eventQuery"
           />
         </UFormField>
         <UFormField label="LocationId" name="locationId" class="not-last:pb-4">
@@ -36,6 +37,7 @@
             v-model="state.locationId"
             collection="posLocations"
             label="LocationId"
+            :query="eventQuery"
           />
         </UFormField>
         <UFormField label="Title" name="title" class="not-last:pb-4">
@@ -130,6 +132,11 @@ console.log('[ProductForm] action:', props.action)
 console.log('[ProductForm] activeItem:', props.activeItem)
 console.log('[ProductForm] initialValues:', initialValues)
 console.log('[ProductForm] state.eventId:', state.value.eventId)
+
+// Query to filter categories and locations by the current event
+const eventQuery = computed(() =>
+  state.value.eventId ? { eventId: state.value.eventId } : {}
+)
 
 // Product options management
 const productOptions = computed({
