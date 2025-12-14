@@ -17,7 +17,7 @@
     <CroutonFormLayout>
       <template #main>
       <div class="flex flex-col gap-4 p-1">
-        <UFormField label="EventId" name="eventId" class="not-last:pb-4">
+        <UFormField v-if="!props.activeItem?.eventId" label="EventId" name="eventId" class="not-last:pb-4">
           <CroutonFormReferenceSelect
             v-model="state.eventId"
             collection="posEvents"
@@ -118,11 +118,18 @@ const { create, update, deleteItems } = useCollectionMutation(collection)
 const { close } = useCrouton()
 
 // Initialize form state with proper values (no watch needed!)
+// For both create and update, merge activeItem to support pre-filled defaults (e.g., eventId)
 const initialValues = props.action === 'update' && props.activeItem?.id
   ? { ...defaultValue, ...props.activeItem }
-  : { ...defaultValue }
+  : { ...defaultValue, ...props.activeItem }
 
 const state = ref<PosProductFormData & { id?: string | null }>(initialValues)
+
+// Debug: log initial values
+console.log('[ProductForm] action:', props.action)
+console.log('[ProductForm] activeItem:', props.activeItem)
+console.log('[ProductForm] initialValues:', initialValues)
+console.log('[ProductForm] state.eventId:', state.value.eventId)
 
 // Product options management
 const productOptions = computed({
@@ -148,8 +155,11 @@ function removeOption(index: number) {
 }
 
 const handleSubmit = async () => {
+  console.log('[ProductForm] handleSubmit called')
+  console.log('[ProductForm] state.value:', state.value)
   try {
     if (props.action === 'create') {
+      console.log('[ProductForm] Creating product...')
       await create(state.value)
     } else if (props.action === 'update' && state.value.id) {
       await update(state.value.id, state.value)

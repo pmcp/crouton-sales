@@ -17,7 +17,7 @@
     <CroutonFormLayout>
       <template #main>
       <div class="flex flex-col gap-4 p-1">
-        <UFormField label="EventId" name="eventId" class="not-last:pb-4">
+        <UFormField v-if="!props.activeItem?.eventId" label="EventId" name="eventId" class="not-last:pb-4">
           <CroutonFormReferenceSelect
             v-model="state.eventId"
             collection="posEvents"
@@ -73,9 +73,10 @@ const { create, update, deleteItems } = useCollectionMutation(collection)
 const { close } = useCrouton()
 
 // Initialize form state with proper values (no watch needed!)
+// For both create and update, merge activeItem to support pre-filled defaults (e.g., eventId)
 const initialValues = props.action === 'update' && props.activeItem?.id
   ? { ...defaultValue, ...props.activeItem }
-  : { ...defaultValue }
+  : { ...defaultValue, ...props.activeItem }
 
 // Convert date strings to Date objects for date fields during editing
 if (props.action === 'update' && props.activeItem?.id) {

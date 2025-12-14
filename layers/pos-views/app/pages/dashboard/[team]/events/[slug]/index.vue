@@ -18,11 +18,9 @@
         </p>
       </div>
       <div class="flex gap-2">
-        <CroutonSlideover collection="posEvents" :id="event.id">
-          <UButton variant="outline" icon="i-lucide-pencil">
-            Edit
-          </UButton>
-        </CroutonSlideover>
+        <UButton variant="outline" icon="i-lucide-pencil" @click="openEditEvent">
+          Edit
+        </UButton>
         <UButton
           variant="outline"
           icon="i-lucide-copy"
@@ -93,8 +91,14 @@
           collection="posLocations"
           :columns="locationColumns"
           :rows="locations"
-          create
         >
+          <template #header>
+            <div class="flex justify-end p-2">
+              <UButton color="primary" size="sm" @click="openCreateLocation">
+                Create Location
+              </UButton>
+            </div>
+          </template>
           <template #eventId-cell="{ row }">
             <CroutonItemCardMini
               v-if="row.original.eventId"
@@ -105,9 +109,7 @@
         </CroutonCollection>
         <div v-else class="p-6 text-center text-muted">
           <p>No locations yet</p>
-          <CroutonSlideover collection="posLocations" :defaults="{ eventId: event.id }">
-            <UButton size="sm" variant="outline" class="mt-2">Add Location</UButton>
-          </CroutonSlideover>
+          <UButton size="sm" variant="outline" class="mt-2" @click="openCreateLocation">Add Location</UButton>
         </div>
       </UCard>
 
@@ -125,8 +127,14 @@
           collection="posCategories"
           :columns="categoryColumns"
           :rows="categories"
-          create
         >
+          <template #header>
+            <div class="flex justify-end p-2">
+              <UButton color="primary" size="sm" @click="openCreateCategory">
+                Create Category
+              </UButton>
+            </div>
+          </template>
           <template #eventId-cell="{ row }">
             <CroutonItemCardMini
               v-if="row.original.eventId"
@@ -137,9 +145,7 @@
         </CroutonCollection>
         <div v-else class="p-6 text-center text-muted">
           <p>No categories yet</p>
-          <CroutonSlideover collection="posCategories" :defaults="{ eventId: event.id }">
-            <UButton size="sm" variant="outline" class="mt-2">Add Category</UButton>
-          </CroutonSlideover>
+          <UButton size="sm" variant="outline" class="mt-2" @click="openCreateCategory">Add Category</UButton>
         </div>
       </UCard>
 
@@ -157,8 +163,14 @@
           collection="posProducts"
           :columns="productColumns"
           :rows="products"
-          create
         >
+          <template #header>
+            <div class="flex justify-end p-2">
+              <UButton color="primary" size="sm" @click="openCreateProduct">
+                Create Product
+              </UButton>
+            </div>
+          </template>
           <template #eventId-cell="{ row }">
             <CroutonItemCardMini
               v-if="row.original.eventId"
@@ -183,9 +195,7 @@
         </CroutonCollection>
         <div v-else class="p-6 text-center text-muted">
           <p>No products yet</p>
-          <CroutonSlideover collection="posProducts" :defaults="{ eventId: event.id }">
-            <UButton size="sm" variant="outline" class="mt-2">Add Product</UButton>
-          </CroutonSlideover>
+          <UButton size="sm" variant="outline" class="mt-2" @click="openCreateProduct">Add Product</UButton>
         </div>
       </UCard>
 
@@ -203,8 +213,14 @@
           collection="posPrinters"
           :columns="printerColumns"
           :rows="printers"
-          create
         >
+          <template #header>
+            <div class="flex justify-end p-2">
+              <UButton color="primary" size="sm" @click="openCreatePrinter">
+                Create Printer
+              </UButton>
+            </div>
+          </template>
           <template #eventId-cell="{ row }">
             <CroutonItemCardMini
               v-if="row.original.eventId"
@@ -222,9 +238,7 @@
         </CroutonCollection>
         <div v-else class="p-6 text-center text-muted">
           <p>No printers yet</p>
-          <CroutonSlideover collection="posPrinters" :defaults="{ eventId: event.id }">
-            <UButton size="sm" variant="outline" class="mt-2">Add Printer</UButton>
-          </CroutonSlideover>
+          <UButton size="sm" variant="outline" class="mt-2" @click="openCreatePrinter">Add Printer</UButton>
         </div>
       </UCard>
 
@@ -242,8 +256,14 @@
           collection="posHelpers"
           :columns="helperColumns"
           :rows="helpers"
-          create
         >
+          <template #header>
+            <div class="flex justify-end p-2">
+              <UButton color="primary" size="sm" @click="openCreateHelper">
+                Create Helper
+              </UButton>
+            </div>
+          </template>
           <template #eventId-cell="{ row }">
             <CroutonItemCardMini
               v-if="row.original.eventId"
@@ -260,9 +280,7 @@
         </CroutonCollection>
         <div v-else class="p-6 text-center text-muted">
           <p>No helpers yet</p>
-          <CroutonSlideover collection="posHelpers" :defaults="{ eventId: event.id }">
-            <UButton size="sm" variant="outline" class="mt-2">Add Helper</UButton>
-          </CroutonSlideover>
+          <UButton size="sm" variant="outline" class="mt-2" @click="openCreateHelper">Add Helper</UButton>
         </div>
       </UCard>
     </div>
@@ -272,7 +290,7 @@
       <UButton
         size="xl"
         icon="i-lucide-shopping-cart"
-        :to="`/pos?event=${event.slug}`"
+        :to="`/order/${route.params.team}/${event.slug}`"
       >
         Start Taking Orders
       </UButton>
@@ -290,6 +308,9 @@ import usePosPrinters from '~~/layers/pos/collections/printers/app/composables/u
 import usePosHelpers from '~~/layers/pos/collections/helpers/app/composables/usePosHelpers'
 
 definePageMeta({ middleware: ['auth'] })
+
+// Crouton form management
+const { open } = useCrouton()
 
 const route = useRoute()
 const router = useRouter()
@@ -415,6 +436,38 @@ async function saveHelperPin() {
   finally {
     savingHelperPin.value = false
   }
+}
+
+// Edit event function
+function openEditEvent() {
+  if (!event.value) return
+  open('update', 'posEvents', [event.value.id])
+}
+
+// Create entity functions with eventId pre-filled
+function openCreateLocation() {
+  if (!event.value) return
+  open('create', 'posLocations', [], 'slideover', { eventId: event.value.id })
+}
+
+function openCreateCategory() {
+  if (!event.value) return
+  open('create', 'posCategories', [], 'slideover', { eventId: event.value.id })
+}
+
+function openCreateProduct() {
+  if (!event.value) return
+  open('create', 'posProducts', [], 'slideover', { eventId: event.value.id })
+}
+
+function openCreatePrinter() {
+  if (!event.value) return
+  open('create', 'posPrinters', [], 'slideover', { eventId: event.value.id })
+}
+
+function openCreateHelper() {
+  if (!event.value) return
+  open('create', 'posHelpers', [], 'slideover', { eventId: event.value.id })
 }
 
 // Duplicate event
