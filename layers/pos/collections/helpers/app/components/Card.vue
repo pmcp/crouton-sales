@@ -35,38 +35,35 @@ const statusText = computed(() => {
 </script>
 
 <template>
-  <UCard>
-    <div class="space-y-3">
-      <div class="flex items-center justify-between gap-3">
-        <div class="flex items-center gap-3 min-w-0">
-          <UIcon name="i-lucide-user" class="size-5 text-primary shrink-0" />
+  <UCard variant="soft">
+    <div class="flex gap-3">
+      <UAvatar icon="i-lucide-user" size="lg" />
+
+      <div class="flex-1 min-w-0 space-y-2">
+        <div class="flex items-center justify-between gap-3">
           <h3 class="font-semibold truncate">{{ item.title }}</h3>
+          <UBadge :color="statusColor" variant="subtle" size="sm">
+            {{ statusText }}
+          </UBadge>
         </div>
-        <UBadge :color="statusColor" variant="subtle" size="xs">
-          {{ statusText }}
-        </UBadge>
-      </div>
 
-      <div class="flex flex-wrap gap-4 text-sm text-muted">
-        <div v-if="item.expiresAt" class="flex items-center gap-1">
-          <UIcon name="i-lucide-clock" class="size-3" />
-          <span>Expires:</span>
-          <CroutonDate :date="item.expiresAt" />
+        <div class="flex flex-wrap gap-3">
+          <UBadge v-if="item.expiresAt" color="neutral" variant="subtle" icon="i-lucide-clock" size="sm">
+            Expires: <CroutonDate :date="item.expiresAt" />
+          </UBadge>
+          <UBadge v-if="item.lastActiveAt" color="neutral" variant="subtle" icon="i-lucide-activity" size="sm">
+            Last active: <CroutonDate :date="item.lastActiveAt" />
+          </UBadge>
         </div>
-        <div v-if="item.lastActiveAt" class="flex items-center gap-1">
-          <UIcon name="i-lucide-activity" class="size-3" />
-          <span>Last active:</span>
-          <CroutonDate :date="item.lastActiveAt" />
-        </div>
-      </div>
 
-      <div class="flex justify-end pt-2 border-t border-default">
-        <CroutonItemButtonsMini
-          update
-          delete
-          @update="handleUpdate"
-          @delete="handleDelete"
-        />
+        <div class="flex justify-end pt-2 border-t border-default">
+          <CroutonItemButtonsMini
+            update
+            delete
+            @update="handleUpdate"
+            @delete="handleDelete"
+          />
+        </div>
       </div>
     </div>
   </UCard>

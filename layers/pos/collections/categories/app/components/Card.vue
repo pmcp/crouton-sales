@@ -20,15 +20,15 @@ function handleDelete() {
 </script>
 
 <template>
-  <UCard>
+  <UCard variant="soft">
     <div class="flex items-center justify-between gap-3">
       <div class="flex items-center gap-3 min-w-0">
-        <UIcon name="i-lucide-folder" class="size-5 text-primary shrink-0" />
+        <UAvatar icon="i-lucide-folder" size="md" />
         <div class="min-w-0">
           <h3 class="font-semibold truncate">{{ item.title }}</h3>
-          <p v-if="item.displayOrder" class="text-sm text-muted">
+          <UBadge v-if="item.displayOrder" color="neutral" variant="subtle" size="xs">
             Order: {{ item.displayOrder }}
-          </p>
+          </UBadge>
         </div>
       </div>
       <CroutonItemButtonsMini

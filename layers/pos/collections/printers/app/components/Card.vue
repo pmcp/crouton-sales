@@ -26,36 +26,42 @@ const connectionString = computed(() => {
 </script>
 
 <template>
-  <UCard>
-    <div class="space-y-3">
-      <div class="flex items-center justify-between gap-3">
-        <div class="flex items-center gap-3 min-w-0">
-          <UIcon name="i-lucide-printer" class="size-5 text-primary shrink-0" />
+  <UCard variant="soft">
+    <div class="flex gap-3">
+      <UAvatar icon="i-lucide-printer" size="lg" />
+
+      <div class="flex-1 min-w-0 space-y-2">
+        <div class="flex items-center justify-between gap-3">
           <div class="min-w-0">
             <h3 class="font-semibold truncate">{{ item.title }}</h3>
             <p class="text-sm text-muted font-mono">{{ connectionString }}</p>
           </div>
+          <UBadge
+            :color="item.isActive !== false ? 'success' : 'neutral'"
+            :icon="item.isActive !== false ? 'i-lucide-wifi' : 'i-lucide-wifi-off'"
+            variant="subtle"
+            size="sm"
+          >
+            {{ item.isActive !== false ? 'Online' : 'Offline' }}
+          </UBadge>
         </div>
-        <UBadge :color="item.isActive !== false ? 'success' : 'neutral'" variant="subtle" size="xs">
-          {{ item.isActive !== false ? 'Online' : 'Offline' }}
-        </UBadge>
-      </div>
 
-      <div v-if="item.locationId" class="flex items-center gap-2">
-        <span class="text-xs text-muted">Location:</span>
-        <CroutonItemCardMini
-          :id="item.locationId"
-          collection="posLocations"
-        />
-      </div>
+        <div v-if="item.locationId" class="flex items-center gap-2">
+          <span class="text-xs text-muted">Location:</span>
+          <CroutonItemCardMini
+            :id="item.locationId"
+            collection="posLocations"
+          />
+        </div>
 
-      <div class="flex justify-end pt-2 border-t border-default">
-        <CroutonItemButtonsMini
-          update
-          delete
-          @update="handleUpdate"
-          @delete="handleDelete"
-        />
+        <div class="flex justify-end pt-2 border-t border-default">
+          <CroutonItemButtonsMini
+            update
+            delete
+            @update="handleUpdate"
+            @delete="handleDelete"
+          />
+        </div>
       </div>
     </div>
   </UCard>

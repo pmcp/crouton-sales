@@ -20,10 +20,10 @@ function handleDelete() {
 </script>
 
 <template>
-  <UCard>
+  <UCard variant="soft">
     <div class="flex items-center justify-between gap-3">
       <div class="flex items-center gap-3 min-w-0">
-        <UIcon name="i-lucide-map-pin" class="size-5 text-primary shrink-0" />
+        <UAvatar icon="i-lucide-map-pin" size="md" />
         <h3 class="font-semibold truncate">{{ item.title }}</h3>
       </div>
       <CroutonItemButtonsMini

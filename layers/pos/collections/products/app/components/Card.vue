@@ -27,36 +27,40 @@ const formattedPrice = computed(() => {
 </script>
 
 <template>
-  <UCard>
-    <div class="space-y-3">
-      <div class="flex items-start justify-between gap-2">
-        <div class="min-w-0 flex-1">
-          <h3 class="font-semibold truncate">{{ item.title }}</h3>
-          <p v-if="item.description" class="text-sm text-muted line-clamp-2 mt-1">
-            {{ item.description }}
-          </p>
+  <UCard variant="soft">
+    <div class="flex gap-3">
+      <UAvatar icon="i-lucide-package" size="lg" />
+
+      <div class="flex-1 min-w-0 space-y-2">
+        <div class="flex items-start justify-between gap-2">
+          <div class="min-w-0 flex-1">
+            <h3 class="font-semibold truncate">{{ item.title }}</h3>
+            <p v-if="item.description" class="text-sm text-muted line-clamp-1 mt-0.5">
+              {{ item.description }}
+            </p>
+          </div>
+          <UBadge :color="item.isActive !== false ? 'success' : 'neutral'" variant="subtle" size="xs">
+            {{ item.isActive !== false ? 'Active' : 'Inactive' }}
+          </UBadge>
         </div>
-        <UBadge :color="item.isActive !== false ? 'success' : 'neutral'" variant="subtle" size="xs">
-          {{ item.isActive !== false ? 'Active' : 'Inactive' }}
-        </UBadge>
-      </div>
 
-      <div class="flex items-center justify-between">
-        <span class="text-lg font-bold text-primary">{{ formattedPrice }}</span>
-        <CroutonItemCardMini
-          v-if="item.categoryId"
-          :id="item.categoryId"
-          collection="posCategories"
-        />
-      </div>
+        <div class="flex items-center justify-between gap-2">
+          <span class="text-lg font-bold text-primary">{{ formattedPrice }}</span>
+          <CroutonItemCardMini
+            v-if="item.categoryId"
+            :id="item.categoryId"
+            collection="posCategories"
+          />
+        </div>
 
-      <div class="flex justify-end pt-2 border-t border-default">
-        <CroutonItemButtonsMini
-          update
-          delete
-          @update="handleUpdate"
-          @delete="handleDelete"
-        />
+        <div class="flex justify-end pt-2 border-t border-default">
+          <CroutonItemButtonsMini
+            update
+            delete
+            @update="handleUpdate"
+            @delete="handleDelete"
+          />
+        </div>
       </div>
     </div>
   </UCard>
