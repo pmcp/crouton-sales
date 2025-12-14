@@ -55,7 +55,7 @@ export const posProductsConfig = {
     remarkPrompt: '',
     hasOptions: false,
     multipleOptionsAllowed: false,
-    options: {},
+    options: [],
     sortOrder: ''
   },
   columns: posProductsColumns,
