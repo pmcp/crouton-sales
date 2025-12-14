@@ -87,9 +87,8 @@
         </div>
         <CroutonCollection
           v-else-if="locations && locations.length > 0"
-          layout="table"
+          layout="grid"
           collection="posLocations"
-          :columns="locationColumns"
           :rows="locations"
         >
           <template #header>
@@ -98,13 +97,6 @@
                 Create Location
               </UButton>
             </div>
-          </template>
-          <template #eventId-cell="{ row }">
-            <CroutonItemCardMini
-              v-if="row.original.eventId"
-              :id="row.original.eventId"
-              collection="posEvents"
-            />
           </template>
         </CroutonCollection>
         <div v-else class="p-6 text-center text-muted">
@@ -123,9 +115,8 @@
         </div>
         <CroutonCollection
           v-else-if="categories && categories.length > 0"
-          layout="table"
+          layout="grid"
           collection="posCategories"
-          :columns="categoryColumns"
           :rows="categories"
         >
           <template #header>
@@ -134,13 +125,6 @@
                 Create Category
               </UButton>
             </div>
-          </template>
-          <template #eventId-cell="{ row }">
-            <CroutonItemCardMini
-              v-if="row.original.eventId"
-              :id="row.original.eventId"
-              collection="posEvents"
-            />
           </template>
         </CroutonCollection>
         <div v-else class="p-6 text-center text-muted">
@@ -159,9 +143,8 @@
         </div>
         <CroutonCollection
           v-else-if="products && products.length > 0"
-          layout="table"
+          layout="grid"
           collection="posProducts"
-          :columns="productColumns"
           :rows="products"
         >
           <template #header>
@@ -170,27 +153,6 @@
                 Create Product
               </UButton>
             </div>
-          </template>
-          <template #eventId-cell="{ row }">
-            <CroutonItemCardMini
-              v-if="row.original.eventId"
-              :id="row.original.eventId"
-              collection="posEvents"
-            />
-          </template>
-          <template #categoryId-cell="{ row }">
-            <CroutonItemCardMini
-              v-if="row.original.categoryId"
-              :id="row.original.categoryId"
-              collection="posCategories"
-            />
-          </template>
-          <template #locationId-cell="{ row }">
-            <CroutonItemCardMini
-              v-if="row.original.locationId"
-              :id="row.original.locationId"
-              collection="posLocations"
-            />
           </template>
         </CroutonCollection>
         <div v-else class="p-6 text-center text-muted">
@@ -209,9 +171,8 @@
         </div>
         <CroutonCollection
           v-else-if="printers && printers.length > 0"
-          layout="table"
+          layout="grid"
           collection="posPrinters"
-          :columns="printerColumns"
           :rows="printers"
         >
           <template #header>
@@ -220,20 +181,6 @@
                 Create Printer
               </UButton>
             </div>
-          </template>
-          <template #eventId-cell="{ row }">
-            <CroutonItemCardMini
-              v-if="row.original.eventId"
-              :id="row.original.eventId"
-              collection="posEvents"
-            />
-          </template>
-          <template #locationId-cell="{ row }">
-            <CroutonItemCardMini
-              v-if="row.original.locationId"
-              :id="row.original.locationId"
-              collection="posLocations"
-            />
           </template>
         </CroutonCollection>
         <div v-else class="p-6 text-center text-muted">
@@ -252,9 +199,8 @@
         </div>
         <CroutonCollection
           v-else-if="helpers && helpers.length > 0"
-          layout="table"
+          layout="grid"
           collection="posHelpers"
-          :columns="helperColumns"
           :rows="helpers"
         >
           <template #header>
@@ -263,19 +209,6 @@
                 Create Helper
               </UButton>
             </div>
-          </template>
-          <template #eventId-cell="{ row }">
-            <CroutonItemCardMini
-              v-if="row.original.eventId"
-              :id="row.original.eventId"
-              collection="posEvents"
-            />
-          </template>
-          <template #expiresAt-cell="{ row }">
-            <CroutonDate :date="row.original.expiresAt" />
-          </template>
-          <template #lastActiveAt-cell="{ row }">
-            <CroutonDate :date="row.original.lastActiveAt" />
           </template>
         </CroutonCollection>
         <div v-else class="p-6 text-center text-muted">
@@ -301,11 +234,6 @@
 <script setup lang="ts">
 import type { PosEvent } from '~~/layers/pos/collections/events/types'
 import type { PosEventSetting } from '~~/layers/pos/collections/eventsettings/types'
-import usePosLocations from '~~/layers/pos/collections/locations/app/composables/usePosLocations'
-import usePosCategories from '~~/layers/pos/collections/categories/app/composables/usePosCategories'
-import usePosProducts from '~~/layers/pos/collections/products/app/composables/usePosProducts'
-import usePosPrinters from '~~/layers/pos/collections/printers/app/composables/usePosPrinters'
-import usePosHelpers from '~~/layers/pos/collections/helpers/app/composables/usePosHelpers'
 
 definePageMeta({ middleware: ['auth'] })
 
@@ -316,12 +244,6 @@ const route = useRoute()
 const router = useRouter()
 const eventSlug = computed(() => route.params.slug as string)
 
-// Column definitions from composables
-const { columns: locationColumns } = usePosLocations()
-const { columns: categoryColumns } = usePosCategories()
-const { columns: productColumns } = usePosProducts()
-const { columns: printerColumns } = usePosPrinters()
-const { columns: helperColumns } = usePosHelpers()
 
 // Fetch events and find the one matching the slug
 const { items: events } = await useCollectionQuery('posEvents')
