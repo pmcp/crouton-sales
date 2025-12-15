@@ -128,7 +128,6 @@
           collection="posOrders"
           :rows="filteredOrders"
           :columns="ordersColumns"
-          sortable
           :hide-default-columns="{ createdAt: true, updatedAt: true, createdBy: true, updatedBy: true }"
         />
         <div v-else class="p-12 text-center text-muted">
