@@ -17,7 +17,7 @@ const { update } = useCollectionMutation('posOrders')
 
 const isExpanded = ref(false)
 const orderItemsQuery = computed(() => isExpanded.value ? { orderId: props.item.id } : {})
-const { items: orderItems, pending: itemsPending } = await useCollectionQuery('posOrderitems', {
+const { items: orderItems, pending: itemsPending } = await useCollectionQuery('posOrderItems', {
   query: orderItemsQuery,
   watch: true,
 })
