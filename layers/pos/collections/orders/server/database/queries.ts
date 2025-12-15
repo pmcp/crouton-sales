@@ -227,8 +227,7 @@ export async function updatePosOrder(
     .where(
       and(
         eq(tables.posOrders.id, recordId),
-        eq(tables.posOrders.teamId, teamId),
-        eq(tables.posOrders.owner, ownerId)
+        eq(tables.posOrders.teamId, teamId)
       )
     )
     .returning()
@@ -255,8 +254,7 @@ export async function deletePosOrder(
     .where(
       and(
         eq(tables.posOrders.id, recordId),
-        eq(tables.posOrders.teamId, teamId),
-        eq(tables.posOrders.owner, ownerId)
+        eq(tables.posOrders.teamId, teamId)
       )
     )
     .returning()
