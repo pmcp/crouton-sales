@@ -15,8 +15,8 @@
     "db:generate": "drizzle-kit generate"
   },
   "dependencies": {
-    "@friendlyinternet/nuxt-crouton": "^1.6.0",
-    "@friendlyinternet/nuxt-crouton-events": "^0.3.0",
+    "@friendlyinternet/nuxt-crouton": "link:/Users/pmcp/Projects/nuxt-crouton/packages/nuxt-crouton",
+    "@friendlyinternet/nuxt-crouton-events": "link:/Users/pmcp/Projects/nuxt-crouton/packages/nuxt-crouton-events",
     "@iconify-json/lucide": "^1.2.45",
     "@nuxt/eslint": "^1.4.1",
     "@nuxt/ui": "^4.0.0",
@@ -42,7 +42,7 @@
     "zod": "^3.25.48"
   },
   "devDependencies": {
-    "@friendlyinternet/nuxt-crouton-collection-generator": "^1.5.2",
+    "@friendlyinternet/nuxt-crouton-collection-generator": "link:/Users/pmcp/Projects/nuxt-crouton/packages/nuxt-crouton-collection-generator",
     "@tailwindcss/typography": "^0.5.16",
     "@vueuse/core": "^13.3.0",
     "@vueuse/nuxt": "13.3.0",
