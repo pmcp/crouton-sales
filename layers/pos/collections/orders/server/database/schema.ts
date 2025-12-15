@@ -29,6 +29,7 @@ export const posOrders = sqliteTable('pos_orders', {
   overallRemarks: text('overallRemarks'),
   isPersonnel: integer('isPersonnel', { mode: 'boolean' }).$default(() => false),
   status: text('status').notNull(),
+  order: integer('order').notNull().$default(() => 0),
 
   createdAt: integer('createdAt', { mode: 'timestamp' }).notNull().$default(() => new Date()),
   updatedAt: integer('updatedAt', { mode: 'timestamp' }).notNull().$onUpdate(() => new Date()),

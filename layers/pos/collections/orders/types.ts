@@ -12,6 +12,7 @@ export interface PosOrder {
   overallRemarks?: string
   isPersonnel?: boolean
   status: string
+  order: number
   createdAt: Date
   updatedAt: Date
   createdBy: string

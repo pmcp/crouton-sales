@@ -121,9 +121,11 @@
         </div>
         <CroutonCollection
           v-else-if="filteredOrders && filteredOrders.length > 0"
-          layout="list"
+          layout="table"
           collection="posOrders"
           :rows="filteredOrders"
+          sortable
+          :hide-default-columns="{ createdAt: true, updatedAt: true, createdBy: true, updatedBy: true }"
         />
         <div v-else class="p-12 text-center text-muted">
           <UIcon name="i-lucide-receipt" class="text-4xl mb-2" />

@@ -1,5 +1,5 @@
 // Generated with array reference post-processing support (v2024-10-12)
-import { eq, and, desc, inArray } from 'drizzle-orm'
+import { eq, and, desc, asc, inArray } from 'drizzle-orm'
 import { alias } from 'drizzle-orm/sqlite-core'
 import * as tables from './schema'
 import type { PosOrder, NewPosOrder } from '../../types'
@@ -144,7 +144,7 @@ export async function getPosOrdersByEventId(teamId: string, eventId: string) {
         eq(tables.posOrders.eventId, eventId)
       )
     )
-    .orderBy(desc(tables.posOrders.createdAt))
+    .orderBy(asc(tables.posOrders.order), desc(tables.posOrders.createdAt))
 
   return orders
 }
@@ -194,7 +194,7 @@ export async function getPosOrdersByEventIdAndOwner(teamId: string, eventId: str
         eq(tables.posOrders.owner, ownerId)
       )
     )
-    .orderBy(desc(tables.posOrders.createdAt))
+    .orderBy(asc(tables.posOrders.order), desc(tables.posOrders.createdAt))
 
   return orders
 }
@@ -269,4 +269,33 @@ export async function deletePosOrder(
   }
 
   return { success: true }
+}
+
+export async function reorderPosOrders(
+  teamId: string,
+  userId: string,
+  updates: Array<{ id: string; order: number }>
+) {
+  const db = useDB()
+
+  // Batch update all orders with their new order values
+  const results = await Promise.all(
+    updates.map(({ id, order }) =>
+      db
+        .update(tables.posOrders)
+        .set({
+          order,
+          updatedBy: userId
+        })
+        .where(
+          and(
+            eq(tables.posOrders.id, id),
+            eq(tables.posOrders.teamId, teamId)
+          )
+        )
+        .returning()
+    )
+  )
+
+  return { success: true, updated: results.flat().length }
 }

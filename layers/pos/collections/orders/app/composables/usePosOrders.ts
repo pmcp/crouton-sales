@@ -7,18 +7,16 @@ export const posOrderSchema = z.object({
   eventOrderNumber: z.string().optional(),
   overallRemarks: z.string().optional(),
   isPersonnel: z.boolean().optional(),
-  status: z.string().min(1, 'status is required')
+  status: z.string().min(1, 'status is required'),
+  order: z.number().optional()
 })
 
 export const posOrdersColumns = [
-  { accessorKey: 'id', header: 'Id' },
-  { accessorKey: 'eventId', header: 'EventId' },
-  { accessorKey: 'clientId', header: 'ClientId' },
-  { accessorKey: 'clientName', header: 'ClientName' },
-  { accessorKey: 'eventOrderNumber', header: 'EventOrderNumber' },
-  { accessorKey: 'overallRemarks', header: 'OverallRemarks' },
-  { accessorKey: 'isPersonnel', header: 'IsPersonnel' },
-  { accessorKey: 'status', header: 'Status' }
+  { accessorKey: 'eventOrderNumber', header: 'Order #' },
+  { accessorKey: 'clientName', header: 'Client' },
+  { accessorKey: 'status', header: 'Status' },
+  { accessorKey: 'isPersonnel', header: 'Staff' },
+  { accessorKey: 'overallRemarks', header: 'Remarks' }
 ]
 
 export const posOrdersConfig = {
@@ -34,7 +32,8 @@ export const posOrdersConfig = {
     eventOrderNumber: '',
     overallRemarks: '',
     isPersonnel: false,
-    status: ''
+    status: '',
+    order: 0
   },
   columns: posOrdersColumns,
 }
