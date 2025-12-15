@@ -124,6 +124,7 @@
           layout="table"
           collection="posOrders"
           :rows="filteredOrders"
+          :columns="ordersColumns"
           sortable
           :hide-default-columns="{ createdAt: true, updatedAt: true, createdBy: true, updatedBy: true }"
         />
@@ -332,6 +333,9 @@ definePageMeta({ middleware: ['auth'] })
 
 const { open } = useCrouton()
 const route = useRoute()
+
+// Orders table columns
+const { columns: ordersColumns } = usePosOrders()
 const router = useRouter()
 const eventSlug = computed(() => route.params.slug as string)
 
