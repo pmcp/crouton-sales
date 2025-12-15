@@ -72,9 +72,12 @@
         </div>
         <CroutonCollection
           v-else-if="filteredProducts && filteredProducts.length > 0"
-          layout="grid"
+          layout="table"
           collection="posProducts"
           :rows="filteredProducts"
+          :columns="productsColumns"
+          sortable
+          :hide-default-columns="{ createdAt: true, updatedAt: true, createdBy: true, updatedBy: true }"
         />
         <div v-else class="p-12 text-center text-muted">
           <UIcon name="i-lucide-package" class="text-4xl mb-2" />
@@ -334,8 +337,9 @@ definePageMeta({ middleware: ['auth'] })
 const { open } = useCrouton()
 const route = useRoute()
 
-// Orders table columns
+// Table columns
 const { columns: ordersColumns } = usePosOrders()
+const { columns: productsColumns } = usePosProducts()
 const router = useRouter()
 const eventSlug = computed(() => route.params.slug as string)
 

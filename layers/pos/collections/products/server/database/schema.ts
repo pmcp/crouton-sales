@@ -34,7 +34,7 @@ export const posProducts = sqliteTable('pos_products', {
   hasOptions: integer('hasOptions', { mode: 'boolean' }).$default(() => false),
   multipleOptionsAllowed: integer('multipleOptionsAllowed', { mode: 'boolean' }).$default(() => false),
   options: jsonColumn('options').$default(() => ({})),
-  sortOrder: text('sortOrder'),
+  order: integer('order').notNull().$default(() => 0),
 
   createdAt: integer('createdAt', { mode: 'timestamp' }).notNull().$default(() => new Date()),
   updatedAt: integer('updatedAt', { mode: 'timestamp' }).notNull().$onUpdate(() => new Date()),

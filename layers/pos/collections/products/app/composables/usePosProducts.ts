@@ -17,24 +17,21 @@ export const posProductSchema = z.object({
     label: z.string(),
     priceModifier: z.number()
   })).optional(),
-  sortOrder: z.string().optional()
+  order: z.number().optional()
 })
 
 export const posProductsColumns = [
-  { accessorKey: 'id', header: 'Id' },
-  { accessorKey: 'eventId', header: 'EventId' },
-  { accessorKey: 'categoryId', header: 'CategoryId' },
-  { accessorKey: 'locationId', header: 'LocationId' },
   { accessorKey: 'title', header: 'Title' },
   { accessorKey: 'description', header: 'Description' },
   { accessorKey: 'price', header: 'Price' },
-  { accessorKey: 'isActive', header: 'IsActive' },
-  { accessorKey: 'requiresRemark', header: 'RequiresRemark' },
-  { accessorKey: 'remarkPrompt', header: 'RemarkPrompt' },
-  { accessorKey: 'hasOptions', header: 'HasOptions' },
-  { accessorKey: 'multipleOptionsAllowed', header: 'MultipleOptionsAllowed' },
-  { accessorKey: 'options', header: 'Options' },
-  { accessorKey: 'sortOrder', header: 'SortOrder' }
+  { accessorKey: 'categoryIdData.title', header: 'Category' },
+  { accessorKey: 'locationIdData.title', header: 'Location' },
+  { accessorKey: 'isActive', header: 'Active' },
+  { accessorKey: 'requiresRemark', header: 'Requires Remark' },
+  { accessorKey: 'remarkPrompt', header: 'Remark Prompt' },
+  { accessorKey: 'hasOptions', header: 'Has Options' },
+  { accessorKey: 'multipleOptionsAllowed', header: 'Multiple Options' },
+  { accessorKey: 'order', header: 'Order' },
 ]
 
 export const posProductsConfig = {
@@ -56,7 +53,7 @@ export const posProductsConfig = {
     hasOptions: false,
     multipleOptionsAllowed: false,
     options: [],
-    sortOrder: ''
+    order: 0
   },
   columns: posProductsColumns,
 }
