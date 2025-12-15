@@ -578,6 +578,7 @@ function openCreateHelper() {
 
 async function loadReceiptSettings() {
   if (!event.value) return
+  if (import.meta.server) return // Skip on server - only needed client-side
   try {
     const teamId = route.params.team as string
     const data = await $fetch<ReceiptSettings>(
