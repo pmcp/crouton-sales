@@ -1,5 +1,5 @@
 // Generated with array reference post-processing support (v2024-10-12)
-import { eq, and, desc, inArray } from 'drizzle-orm'
+import { eq, and, desc, asc, inArray } from 'drizzle-orm'
 import { alias } from 'drizzle-orm/sqlite-core'
 import * as tables from './schema'
 import type { PosProduct, NewPosProduct } from '../../types'
@@ -49,7 +49,7 @@ export async function getAllPosProducts(teamId: string) {
     .leftJoin(createdByUsers, eq(tables.posProducts.createdBy, createdByUsers.id))
     .leftJoin(updatedByUsers, eq(tables.posProducts.updatedBy, updatedByUsers.id))
     .where(eq(tables.posProducts.teamId, teamId))
-    .orderBy(desc(tables.posProducts.createdAt))
+    .orderBy(asc(tables.posProducts.order), desc(tables.posProducts.createdAt))
 
   return products
 }
@@ -100,7 +100,7 @@ export async function getPosProductsByIds(teamId: string, productIds: string[]) 
         inArray(tables.posProducts.id, productIds)
       )
     )
-    .orderBy(desc(tables.posProducts.createdAt))
+    .orderBy(asc(tables.posProducts.order), desc(tables.posProducts.createdAt))
 
   return products
 }
@@ -151,7 +151,7 @@ export async function getPosProductsByEventId(teamId: string, eventId: string) {
         eq(tables.posProducts.eventId, eventId)
       )
     )
-    .orderBy(desc(tables.posProducts.createdAt))
+    .orderBy(asc(tables.posProducts.order), desc(tables.posProducts.createdAt))
 
   return products
 }
@@ -226,4 +226,32 @@ export async function deletePosProduct(
   }
 
   return { success: true }
+}
+
+export async function reorderPosProducts(
+  teamId: string,
+  userId: string,
+  updates: Array<{ id: string; order: number }>
+) {
+  const db = useDB()
+
+  const results = await Promise.all(
+    updates.map(({ id, order }) =>
+      db
+        .update(tables.posProducts)
+        .set({
+          order,
+          updatedBy: userId
+        })
+        .where(
+          and(
+            eq(tables.posProducts.id, id),
+            eq(tables.posProducts.teamId, teamId)
+          )
+        )
+        .returning()
+    )
+  )
+
+  return { success: true, updated: results.flat().length }
 }
