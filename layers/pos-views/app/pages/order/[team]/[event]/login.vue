@@ -24,13 +24,25 @@
 
         <UCard>
           <UForm :state="formState" @submit="onSubmit" class="space-y-4">
-            <UFormField label="Your Name" name="helperName">
+            <UFormField label="Helper" name="helper">
+              <USelectMenu
+                v-model="selectedHelperId"
+                :items="helperOptions"
+                value-key="id"
+                label-key="label"
+                placeholder="Select or create helper"
+                size="lg"
+                class="w-full"
+                :search-input="false"
+              />
+            </UFormField>
+
+            <UFormField v-if="isCreatingNew" label="Your Name" name="helperName">
               <UInput
                 v-model="formState.helperName"
                 placeholder="Enter your name"
                 size="lg"
                 class="w-full"
-                autofocus
               />
             </UFormField>
 
@@ -80,6 +92,19 @@ interface PosEvent {
   helperPin?: string
 }
 
+interface Helper {
+  id: string
+  title: string
+}
+
+interface HelperOption {
+  id: string
+  label: string
+  icon?: string
+}
+
+const CREATE_NEW_ID = '__create_new__'
+
 const route = useRoute()
 const teamSlug = computed(() => route.params.team as string)
 const eventSlug = computed(() => route.params.event as string)
@@ -89,10 +114,31 @@ const submitting = ref(false)
 const errorMessage = ref('')
 const event = ref<PosEvent | null>(null)
 const teamId = ref<string | null>(null)
+const helpers = ref<Helper[]>([])
+const selectedHelperId = ref<string | null>(null)
 
 const formState = reactive({
   helperName: '',
   pin: '',
+})
+
+const isCreatingNew = computed(() => selectedHelperId.value === CREATE_NEW_ID)
+
+const helperOptions = computed<HelperOption[]>(() => {
+  const options: HelperOption[] = helpers.value.map(h => ({
+    id: h.id,
+    label: h.title,
+    icon: 'i-lucide-user',
+  }))
+
+  // Add "Create new helper" option at the end
+  options.push({
+    id: CREATE_NEW_ID,
+    label: 'Create new helper',
+    icon: 'i-lucide-user-plus',
+  })
+
+  return options
 })
 
 // Fetch team and event data
@@ -108,6 +154,17 @@ onMounted(async () => {
 
     // Then fetch the event by slug using the public endpoint
     event.value = await $fetch<PosEvent>(`/api/pos/events/${teamId.value}/by-slug/${eventSlug.value}`)
+
+    // Fetch existing helpers for this event
+    if (event.value) {
+      try {
+        helpers.value = await $fetch<Helper[]>(`/api/pos/helpers/${event.value.id}`)
+      }
+      catch (err) {
+        console.error('Failed to load helpers:', err)
+        // Non-critical error, continue without helpers
+      }
+    }
   }
   catch (err) {
     console.error('Failed to load event:', err)
@@ -120,16 +177,36 @@ onMounted(async () => {
 async function onSubmit() {
   if (!event.value || !teamId.value) return
 
+  // Validate selection
+  if (!selectedHelperId.value) {
+    errorMessage.value = 'Please select a helper or create a new one.'
+    return
+  }
+
+  // Validate name when creating new
+  if (isCreatingNew.value && !formState.helperName.trim()) {
+    errorMessage.value = 'Please enter your name.'
+    return
+  }
+
   errorMessage.value = ''
   submitting.value = true
 
   try {
+    const body: Record<string, string> = {
+      pin: formState.pin,
+    }
+
+    if (isCreatingNew.value) {
+      body.helperName = formState.helperName.trim()
+    }
+    else {
+      body.helperId = selectedHelperId.value
+    }
+
     const response = await $fetch(`/api/teams/${teamId.value}/pos-events/${event.value.id}/helper-login`, {
       method: 'POST',
-      body: {
-        pin: formState.pin,
-        helperName: formState.helperName || 'Helper',
-      },
+      body,
     })
 
     // Store the token in a cookie
