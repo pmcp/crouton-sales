@@ -116,6 +116,10 @@ export async function generatePrintQueues(options: GenerateQueuesOptions): Promi
         eq(posPrinters.isActive, true)
       )
     )
+  console.log('[print-queue] Found', allPrinters.length, 'active printers for event', eventId)
+  if (allPrinters.length === 0) {
+    console.log('[print-queue] WARNING: No active printers configured for this event!')
+  }
 
   // Separate kitchen printers (by location) and receipt printers
   const kitchenPrinters = allPrinters.filter(p => p.type === 'kitchen' || !p.type)

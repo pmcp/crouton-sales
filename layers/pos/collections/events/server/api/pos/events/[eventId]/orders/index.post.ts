@@ -4,6 +4,8 @@ import { posEvents } from '~~/layers/pos/collections/events/server/database/sche
 import { posHelpers } from '~~/layers/pos/collections/helpers/server/database/schema'
 import { posOrders } from '~~/layers/pos/collections/orders/server/database/schema'
 import { posOrderitems } from '~~/layers/pos/collections/orderitems/server/database/schema'
+import { teams } from '~~/server/database/schema'
+import { generatePrintQueues } from '~~/layers/pos/server/utils/print-queue-service'
 
 interface OrderItem {
   productId: string
@@ -25,7 +27,10 @@ interface CreateOrderBody {
 
 // Helper-authenticated endpoint to create orders
 export default defineEventHandler(async (event) => {
+  console.log('[order] POST /orders called')
+
   const eventId = getRouterParam(event, 'eventId')
+  console.log('[order] eventId:', eventId)
 
   if (!eventId) {
     throw createError({
@@ -68,19 +73,25 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  // Get the event
-  const [posEvent] = await db
-    .select()
+  // Get the event with team info
+  const [eventWithTeam] = await db
+    .select({
+      event: posEvents,
+      team: teams,
+    })
     .from(posEvents)
+    .leftJoin(teams, eq(posEvents.teamId, teams.id))
     .where(eq(posEvents.id, eventId))
     .limit(1)
 
-  if (!posEvent) {
+  if (!eventWithTeam || !eventWithTeam.event) {
     throw createError({
       statusCode: 404,
       statusMessage: 'Event not found',
     })
   }
+
+  const posEvent = eventWithTeam.event
 
   const body = await readBody<CreateOrderBody>(event)
 
@@ -148,9 +159,25 @@ export default defineEventHandler(async (event) => {
     .set({ lastActiveAt: new Date() })
     .where(eq(posHelpers.id, helper.id))
 
+  // Generate print queue entries automatically
+  const printQueueIds = await generatePrintQueues({
+    orderId: order.id,
+    eventId: posEvent.id,
+    teamId: posEvent.teamId,
+    orderNumber: eventOrderNumber,
+    clientName: body.clientName || undefined,
+    orderNotes: body.overallRemarks || undefined,
+    teamName: eventWithTeam.team?.name || 'POS',
+    eventName: posEvent.title,
+    isPersonnel: body.isPersonnel || false,
+    createdBy: helper.id,
+  })
+  console.log('[order] Generated', printQueueIds.length, 'print queue entries')
+
   return {
     order,
     items: orderItems,
     eventOrderNumber,
+    printQueueIds,
   }
 })

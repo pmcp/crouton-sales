@@ -4,10 +4,13 @@ import { validatePrintServerApiKey } from '~~/server/utils/print-server-auth'
 // Print server endpoint to poll for pending jobs
 // Authenticated via API key in X-API-Key header
 export default defineEventHandler(async (event) => {
+  console.log('[print-server] GET /jobs called')
+
   // Validate API key
   validatePrintServerApiKey(event)
 
   const eventId = getRouterParam(event, 'eventId')
+  console.log('[print-server] eventId:', eventId)
 
   if (!eventId) {
     throw createError({
@@ -22,6 +25,7 @@ export default defineEventHandler(async (event) => {
 
   // Get pending print jobs for this event
   const jobs = await getPendingPrintJobs(eventId)
+  console.log('[print-server] Found', jobs.length, 'pending jobs')
 
   // If requested, mark fetched jobs as printing
   if (markAsPrinting && jobs.length > 0) {

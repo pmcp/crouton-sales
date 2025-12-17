@@ -7,13 +7,15 @@ import { generatePrintQueues } from '~~/layers/pos/server/utils/print-queue-serv
 
 // Helper-authenticated endpoint to trigger print queue generation for an order
 export default defineEventHandler(async (event) => {
-  const eventId = getRouterParam(event, 'eventId')
-  const orderId = getRouterParam(event, 'orderId')
+  console.log('[print] POST /print-server/orders/.../print called')
 
-  if (!eventId || !orderId) {
+  const orderId = getRouterParam(event, 'orderId')
+  console.log('[print] orderId:', orderId)
+
+  if (!orderId) {
     throw createError({
       statusCode: 400,
-      statusMessage: 'Event ID and Order ID are required',
+      statusMessage: 'Order ID is required',
     })
   }
 
@@ -30,7 +32,23 @@ export default defineEventHandler(async (event) => {
 
   const db = useDB()
 
-  // Validate helper token
+  // Get the order first to find the eventId
+  const [order] = await db
+    .select()
+    .from(posOrders)
+    .where(eq(posOrders.id, orderId))
+    .limit(1)
+
+  if (!order) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: 'Order not found',
+    })
+  }
+
+  const eventId = order.eventId
+
+  // Validate helper token against the order's event
   const [helper] = await db
     .select()
     .from(posHelpers)
@@ -69,26 +87,8 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  // Get the order
-  const [order] = await db
-    .select()
-    .from(posOrders)
-    .where(
-      and(
-        eq(posOrders.id, orderId),
-        eq(posOrders.eventId, eventId)
-      )
-    )
-    .limit(1)
-
-  if (!order) {
-    throw createError({
-      statusCode: 404,
-      statusMessage: 'Order not found',
-    })
-  }
-
   // Generate print queue entries
+  console.log('[print] Generating print queues for order:', order.id)
   const queueIds = await generatePrintQueues({
     orderId: order.id,
     eventId: posEvent.event.id,
@@ -101,6 +101,7 @@ export default defineEventHandler(async (event) => {
     isPersonnel: order.isPersonnel || false,
     createdBy: helper.id,
   })
+  console.log('[print] Generated', queueIds.length, 'print queue entries:', queueIds)
 
   // Update helper's last active timestamp
   await db
